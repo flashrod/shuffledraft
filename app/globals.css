@@ -3,6 +3,7 @@
 @theme {
   --color-canvas: #f7f6f3;
   --color-surface: #ffffff;
+  --color-board: #f1efe9; /* table surface, slightly warmer than canvas */
   --color-border: #eaeaea;
   --color-border-strong: #d4d4d4;
   --color-ink: #111111;
@@ -10,7 +11,7 @@
   --color-muted: #787774;
   --color-muted-soft: #a8a8a2;
 
-  /* Spot pastels (semantic accents only) */
+  /* Spot pastels (semantic accents only, used for position & tier) */
   --color-pale-red-bg: #fdebec;
   --color-pale-red-text: #9f2f2d;
   --color-pale-blue-bg: #e1f3fe;
@@ -31,13 +32,19 @@ body {
   font-family: "Geist Sans", system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Typography scale */
+/* Typography scale — editorial, intentional */
 h1, h2, h3, h4, h5, h6 {
   font-family: "Geist Sans", system-ui, -apple-system, sans-serif;
   letter-spacing: -0.02em;
   line-height: 1.2;
+}
+
+.number-mono {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Subtle scroll entry reveal */
@@ -50,4 +57,54 @@ h1, h2, h3, h4, h5, h6 {
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Board surface */
+.board {
+  background: var(--color-board);
+}
+
+/* Position zone header */
+.zone-label {
+  @apply text-[10px] uppercase tracking-[0.14em] font-medium block mb-2 px-2;
+}
+
+/* Trading-card style player card base */
+.player-card {
+  @apply rounded-[14px] border border-[var(--color-border)] bg-white shadow-sm;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+  cursor: pointer;
+}
+.player-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.25);
+}
+.player-card:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.player-card.selected {
+  border-color: var(--color-pale-yellow-text);
+  box-shadow: 0 0 0 3px rgba(149, 100, 0, 0.15);
+}
+
+/* Tally strip */
+.tally-strip {
+  @apply flex items-center gap-4 px-4 py-2;
+}
+
+/* Bottom sheet backdrop */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+}
+
+/* Focus visible for accessibility */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-pale-yellow-text);
+  outline-offset: 2px;
 }
