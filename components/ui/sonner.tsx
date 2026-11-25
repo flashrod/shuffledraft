@@ -1,46 +1,32 @@
 "use client"
 
-import { useTheme } from "next-themes"
-import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
+import { Toaster as SonnerPrimitive, type ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
-
   return (
-    <Sonner
-      theme={theme as ToasterProps["theme"]}
+    <SonnerPrimitive
       className="toaster group"
-      icons={{
-        success: (
-          <CircleCheckIcon className="size-4" />
-        ),
-        info: (
-          <InfoIcon className="size-4" />
-        ),
-        warning: (
-          <TriangleAlertIcon className="size-4" />
-        ),
-        error: (
-          <OctagonXIcon className="size-4" />
-        ),
-        loading: (
-          <Loader2Icon className="size-4 animate-spin" />
-        ),
-      }}
-      style={
-        {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-          "--border-radius": "var(--radius)",
-        } as React.CSSProperties
-      }
       toastOptions={{
         classNames: {
-          toast: "cn-toast",
+          toast: "brutalist-toast",
+          description: "brutalist-toast-description",
+          action: "brutalist-toast-action",
+          cancel: "brutalist-toast-cancel",
         },
-      }}
+        style: {
+          background: "var(--color-surface)",
+          color: "var(--color-ink)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "0",
+          fontFamily: "var(--font-macro)",
+          fontSize: "13px",
+          fontWeight: "800",
+          textTransform: "uppercase",
+          letterSpacing: "-0.02em",
+          padding: "12px 16px",
+          boxShadow: "4px 4px 0px var(--color-ink)",
+        },
+      } as any}
       {...props}
     />
   )

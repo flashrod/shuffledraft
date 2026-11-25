@@ -15,9 +15,9 @@ export function Board({ set, onPick, disabled = false }: BoardProps) {
   const players = set?.players ?? [];
 
   return (
-    <div className="board rounded-[18px] border border-[var(--color-border)] p-4 shadow-sm">
+    <div className="compartment rounded-none p-[1px]">
       {players.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-[1px] bg-[var(--color-border)]">
           {players.map((p) => (
             <PlayerCard
               key={p.id}
@@ -31,8 +31,8 @@ export function Board({ set, onPick, disabled = false }: BoardProps) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-10">
-          <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[var(--color-muted-soft)] block mb-2">No players available</span>
+        <div className="flex items-center justify-center py-20">
+          <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block">No players available</span>
         </div>
       )}
     </div>

@@ -20,7 +20,6 @@ interface DraftScreenProps {
 }
 
 export function DraftScreen({ state, dispatch, onPick, onReady, onStartDraft }: DraftScreenProps) {
-  const toast = useSonner();
   const human = state.members[0];
   const humanDrafted = state.drafted[human.id] ?? [];
   const holdIdx = state.round < GAME.ROUNDS ? (human.seat + state.round) % state.nManagers : -1;
@@ -54,65 +53,78 @@ export function DraftScreen({ state, dispatch, onPick, onReady, onStartDraft }: 
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 px-5 py-4 border-b border-[var(--color-border)] bg-white sticky top-0 z-20">
+      <header className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-[10px] text-[var(--color-muted)] uppercase tracking-[0.14em]">
+          <div className="flex items-center gap-2 text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider">
             <span className="number-mono">Round {state.round + 1} / {GAME.ROUNDS}</span>
-            <span className="w-px h-3 bg-[var(--color-border-strong)]"></span>
+            <span className="w-px h-3 bg-[var(--color-border-bright)]"></span>
             <span>{state.statusMessage}</span>
           </div>
-          <h2 className="text-lg font-bold">Shuffle Draft</h2>
+          <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase">Shuffle Draft</h1>
         </div>
         <div className="flex items-center gap-4">
           {state.config.pickTimer && state.timerSecondsLeft != null ? (
-            <div className="w-[140px] h-2 bg-[var(--color-border)] rounded-full overflow-hidden">
-              <Progress value={(state.timerSecondsLeft / state.config.pickTimer) * 100} className="h-full bg-[var(--color-pale-yellow-text)]" />
+            <div className="w-[140px] h-2 bg-[var(--color-border)] rounded-none overflow-hidden">
+              <Progress value={(state.timerSecondsLeft / state.config.pickTimer) * 100} className="h-full bg-[var(--color-accent)]" />
             </div>
           ) : null}
-          <Badge variant="outline" className="number-mono text-sm">{humanDrafted.length}/{GAME.XI_SIZE}</Badge>
+          <Badge variant="outline" className="number-mono text-[9px]">{humanDrafted.length}/{GAME.XI_SIZE}</Badge>
         </div>
       </header>
 
       <main className="flex-1 min-w-0 overflow-y-auto p-4 lg:p-6">
         {holdSet ? (
           <div className="px-1">
-            <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[var(--color-muted-soft)] block mb-3">Your set — pick one player</span>
+            <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Your set — pick one player</span>
             <Board set={holdSet} onPick={handlePick} disabled={false} />
           </div>
         ) : (
           <div className="px-4 py-20 text-center">
-            <span className="text-[10px] text-[var(--color-muted-soft)]">Your set</span>
-            <p className="mt-2 text-sm text-[var(--color-muted)]">No set available this round.</p>
+            <span className="text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider">Your set</span>
+            <p className="mt-2 text-[var(--color-ink-dim)] uppercase tracking-wider text-[9px]">No set available this round.</p>
           </div>
         )}
       </main>
 
       <aside className={cn(
-        "border-t border-[var(--color-border)] bg-white shadow-sm",
+        "border-t border-[var(--color-border)] bg-[var(--color-surface)]",
         "lg:border-t-0 lg:border-l lg:border-[var(--color-border)] lg:w-[360px] lg:shadow-none",
       )}>
         <div className="p-4 lg:p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold">Your XI (drafted)</h3>
-              <p className="text-[10px] text-[var(--color-muted-soft)] uppercase tracking-[0.12em]">Provisional {provisional}</p>
+              <h3 className="text-sm font-bold uppercase tracking-wider">Your XI (drafted)</h3>
+              <p className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">Provisional {provisional}</p>
             </div>
-            <Button onClick={() => setXiExpanded(!xiExpanded)} variant="outline" size="sm" className="h-8 px-2.5 text-[10px]">{xiExpanded ? "Collapse" : "View XI"}</Button>
+            <Button
+              onClick={() => setXiExpanded(!xiExpanded)}
+              variant="outline"
+              size="sm"
+              className="h-8 px-2.5 text-[9px]"
+            >
+              {xiExpanded ? "Collapse" : "View XI"}
+            </Button>
           </div>
+
           {xiExpanded && (
             <div className="space-y-3 pt-3 border-t border-[var(--color-border)]">
               {humanDrafted.length === 0 ? (
-                <div className="text-center py-4 text-sm text-[var(--color-muted)] italic">No players drafted yet.</div>
+                <div className="text-center py-4 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">No players drafted yet.</div>
               ) : (
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {humanDrafted.map((d) => (
-                    <div key={d.player.id} className="flex items-center justify-between gap-2 px-3 py-2 rounded-[10px] border border-transparent hover:bg-white/50 transition-colors">
+                    <div
+                      key={d.player.id}
+                      className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--color-border)]/20"
+                    >
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <span className="text-[9px] font-mono leading-none">{d.player.nation}</span>
-                        <span className="text-sm truncate">{d.player.name}</span>
+                        <span className="text-sm font-bold truncate uppercase">{d.player.name}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className={cn("inline-block px-1.5 py-0.5 rounded text-[8px] font-bold leading-none", posColor(d.player.position))}>{d.player.position}</span>
+                        <span className={cn("inline-block px-1.5 py-0.5 rounded-none text-[8px] font-bold uppercase", posColor(d.player.position))}>
+                          {d.player.position}
+                        </span>
                         <span className="number-mono text-xs font-bold">{d.player.rating}</span>
                       </div>
                     </div>
@@ -129,10 +141,10 @@ export function DraftScreen({ state, dispatch, onPick, onReady, onStartDraft }: 
 
 function posColor(position: string) {
   switch (position) {
-    case "GK": return "bg-[var(--color-pale-blue-bg)] text-[var(--color-pale-blue-text)] border-[var(--color-pale-blue-text)]/30";
-    case "DEF": return "bg-[var(--color-pale-green-bg)] text-[var(--color-pale-green-text)] border-[var(--color-pale-green-text)]/30";
-    case "MID": return "bg-[var(--color-pale-yellow-bg)] text-[var(--color-pale-yellow-text)] border-[var(--color-pale-yellow-text)]/30";
-    case "FWD": return "bg-[var(--color-pale-red-bg)] text-[var(--color-pale-red-text)] border-[var(--color-pale-red-text)]/30";
+    case "GK": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "DEF": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "MID": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "FWD": return "border border-[var(--color-accent)] bg-transparent text-[var(--color-accent)]";
   }
-  return "border-[var(--color-border)] text-[var(--color-muted)]";
+  return "border border-[var(--color-border)] text-[var(--color-ink-dim)]";
 }

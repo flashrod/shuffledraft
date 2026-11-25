@@ -5,13 +5,13 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "800", "900"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-svh bg-[var(--color-canvas)] text-[var(--color-ink)] antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-svh bg-[var(--color-bg)] text-[var(--color-ink)] antialiased`}
       >
         {children}
       </body>

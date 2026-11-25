@@ -60,33 +60,33 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-svh">
+    <div className="flex flex-col min-h-svh bg-[var(--color-bg)] text-[var(--color-ink)]">
       <Sonner />
       {mode === "home" ? (
         <div className="flex-1 p-6 md:p-12">
           <div className="mx-auto max-w-5xl">
             <div className="text-center mb-16">
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Shuffle Draft</h1>
-              <p className="text-[var(--color-muted)] text-lg">
+              <h1 className="text-[48px] md:text-[64px] font-bold tracking-tighter leading-none uppercase mb-4">Shuffle Draft</h1>
+              <p className="text-[var(--color-ink-dim)] text-[11px] uppercase tracking-wider">
                 Draft a starting XI. Vote on the best team. No match simulation — just the draft.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-[var(--color-border)] p-[1px]">
               <div className="lg:col-span-7">
-                <Card className="border-transparent p-0">
-                  <CardContent className="p-8">
-                    <form onSubmit={handleCreate} className="space-y-5">
-                      <CardHeader>
-                        <CardTitle className="text-sm font-semibold uppercase tracking-wider text-[var(--color-muted)]">Create room (host)</CardTitle>
+                <Card className="border-none p-0 bg-[var(--color-surface)]">
+                  <CardContent className="p-6">
+                    <form onSubmit={handleCreate} className="space-y-4">
+                      <CardHeader className="border-b border-[var(--color-border)] pb-3">
+                        <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Create room (host)</CardTitle>
                       </CardHeader>
                       <Input
                         placeholder="Your name"
                         value={hostName}
                         onChange={(e) => setHostName(e.target.value)}
-                        className="bg-transparent border-b border-[var(--color-border)] focus:border-black px-0 text-[var(--color-ink)] placeholder-[var(--color-muted-soft)]"
+                        className="bg-transparent border-b border-[var(--color-border)] focus:border-[var(--color-accent)] px-0 text-[var(--color-ink)] placeholder-[var(--color-ink-dim)]"
                       />
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-3 gap-[1px] bg-[var(--color-border)] p-[1px]">
                         <NumberInput
                           label="Managers"
                           value={nManagers}
@@ -121,7 +121,7 @@ export default function Home() {
                       <Button
                         type="submit"
                         disabled={creating}
-                        className="w-full py-4 bg-[var(--color-ink)] text-[var(--color-surface)] hover:bg-[var(--color-ink-soft)] disabled:opacity-50"
+                        className="w-full py-4 bg-[var(--color-accent)] text-[var(--color-bg)] border-[var(--color-accent)] hover:bg-[var(--color-accent-dim)] hover:border-[var(--color-accent-dim)] disabled:opacity-40 text-[10px] font-bold uppercase tracking-wider"
                       >
                         {creating ? "Creating…" : "Create room"}
                       </Button>
@@ -130,18 +130,18 @@ export default function Home() {
                 </Card>
               </div>
               <div className="lg:col-span-5">
-                <div className="space-y-4">
-                  <Button onClick={() => setMode("game")} className="w-full py-4 text-lg">
+                <div className="space-y-3">
+                  <Button onClick={() => setMode("game")} className="w-full py-4 text-[16px] font-bold uppercase tracking-wider bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-black/20 text-[var(--color-ink)]">
                     Play vs bots
                   </Button>
                   <Button
                     onClick={() => setMode("join")}
-                    className="w-full py-3 border-[var(--color-border)] hover:bg-white text-[var(--color-ink-soft)]"
+                    className="w-full py-3 border-[var(--color-border)] hover:bg-black/20 text-[var(--color-ink-dim)] text-[10px] font-bold uppercase tracking-wider"
                   >
                     Join with code
                   </Button>
                 </div>
-                <div className="mt-8 grid grid-cols-2 gap-3 text-[var(--color-muted-soft)] text-xs">
+                <div className="mt-8 grid grid-cols-2 gap-[1px] bg-[var(--color-border)] p-[1px] text-[var(--color-ink-dim)] text-[9px] uppercase tracking-wider">
                   <div className="flex items-center gap-1">
                     <Badge variant="outline">2–8 managers</Badge>
                     <span>per room</span>
@@ -167,25 +167,25 @@ export default function Home() {
         <div className="flex-1 p-6 md:p-12">
           <div className="mx-auto max-w-xl">
             <div className="text-center mb-10">
-              <h2 className="text-2xl font-bold mb-2">Join room</h2>
-              <p className="text-[var(--color-muted)] text-sm">Enter the 6-character join code</p>
+              <h2 className="text-[24px] font-bold uppercase tracking-tighter leading-none mb-2">Join room</h2>
+              <p className="text-[var(--color-ink-dim)] text-[9px] uppercase tracking-wider">Enter the 6-character join code</p>
             </div>
-            <form onSubmit={handleJoin} className="space-y-4">
+            <form onSubmit={handleJoin} className="space-y-3">
               <Input
                 placeholder="ABCDEF"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                className="bg-transparent border-b border-[var(--color-border)] focus:border-black px-0 text-[var(--color-ink)] text-lg text-center uppercase placeholder-[var(--color-muted-soft)]"
+                className="bg-transparent border-b border-[var(--color-border)] focus:border-[var(--color-accent)] px-0 text-[var(--color-ink)] text-lg text-center uppercase placeholder-[var(--color-ink-dim)]"
                 maxLength={6}
               />
-              <Button type="submit" className="w-full py-3 bg-[var(--color-ink)] text-[var(--color-surface)]">
+              <Button type="submit" className="w-full py-3 bg-[var(--color-ink)] text-[var(--color-bg)] border-[var(--color-ink)] text-[10px] font-bold uppercase tracking-wider">
                 Join room
               </Button>
             </form>
             <Button
               variant="outline"
               onClick={() => setMode("home")}
-              className="w-full py-3 border-[var(--color-border)] hover:bg-white text-[var(--color-ink-soft)]"
+              className="w-full py-3 border-[var(--color-border)] hover:bg-black/20 text-[var(--color-ink-dim)] text-[10px] font-bold uppercase tracking-wider"
             >
               Back
             </Button>
@@ -212,18 +212,18 @@ function NumberInput({
   max: number;
 }) {
   return (
-    <div className="space-y-1">
-      <label className="text-[10px] uppercase tracking-wider text-[var(--color-muted)]">{label}</label>
-      <div className="flex gap-1">
+    <div className="space-y-1 bg-[var(--color-surface)] p-2">
+      <label className="text-[9px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)]">{label}</label>
+      <div className="flex gap-[1px] bg-[var(--color-border)]">
         {[2, 3, 4, 5, 6, 7, 8].map((n) => (
           <Button
             key={n}
             onClick={() => onChange(n)}
             className={cn(
-              "text-xs flex-1 border-[var(--color-border)] hover:bg-white/50 hover:border-black/30",
+              "text-[9px] font-bold uppercase tracking-wider flex-1 border-none bg-transparent hover:bg-[var(--color-surface)]/50",
               value === n
-                ? "border-black bg-black text-white"
-                : "text-[var(--color-ink-soft)]",
+                ? "bg-[var(--color-ink)] text-[var(--color-bg)]"
+                : "text-[var(--color-ink-dim)]",
             )}
           >
             {n}
@@ -248,9 +248,9 @@ function SelectTimer({
   isText?: boolean;
 }) {
   return (
-    <div className="space-y-1">
-      <label className="text-[10px] uppercase tracking-wider text-[var(--color-muted)]">{label}</label>
-      <div className="flex gap-1">
+    <div className="space-y-1 bg-[var(--color-surface)] p-2">
+      <label className="text-[9px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)]">{label}</label>
+      <div className="flex gap-[1px] bg-[var(--color-border)]">
         {options.map((o) => {
           let label: string;
           let val: string | number | null;
@@ -269,10 +269,10 @@ function SelectTimer({
               key={String(val)}
               onClick={() => onChange(val)}
               className={cn(
-                "text-xs flex-1 border-[var(--color-border)] hover:bg-white/50 hover:border-black/30",
+                "text-[9px] font-bold uppercase tracking-wider flex-1 border-none bg-transparent hover:bg-[var(--color-surface)]/50",
                 value === val
-                  ? "border-black bg-black text-white"
-                  : "text-[var(--color-ink-soft)]",
+                  ? "bg-[var(--color-ink)] text-[var(--color-bg)]"
+                  : "text-[var(--color-ink-dim)]",
               )}
             >
               {label}

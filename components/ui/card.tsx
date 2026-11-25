@@ -11,7 +11,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "flex flex-col overflow-hidden rounded-sm border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm shadow-[var(--color-border)]/40",
+        "compartment flex flex-col overflow-hidden",
         size === "sm" ? "p-3" : "p-5",
         className
       )}
@@ -24,7 +24,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-header"
-      className={cn("grid auto-rows-min items-start gap-1 px-5 pt-5", className)}
+      className={cn("grid auto-rows-min items-start gap-1 px-5 pt-5 border-b border-[var(--color-border)]", className)}
       {...props}
     />
   )
@@ -34,7 +34,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-title"
-      className={cn("text-base font-medium leading-snug", className)}
+      className={cn("text-sm font-bold tracking-tight leading-none uppercase", className)}
       {...props}
     />
   )
@@ -44,7 +44,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
-      className={cn("text-xs text-[var(--color-muted)]", className)}
+      className={cn("text-[10px] text-[var(--color-ink-dim)] leading-none uppercase tracking-wider", className)}
       {...props}
     />
   )
@@ -54,7 +54,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-action"
-      className={cn("col-start-2 row-span-2 row-start-1 self-start justify-self-end", className)}
+      className={cn("flex items-center justify-end gap-2 px-5 pt-4 border-t border-[var(--color-border)]", className)}
       {...props}
     />
   )
@@ -62,7 +62,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div data-slot="card-content" className={cn("px-5", className)} {...props} />
+    <div data-slot="card-content" className={cn("px-5 pt-4", className)} {...props} />
   )
 }
 

@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { GAME } from "@/lib/config";
 
-const initialEngine = createEngine("You", 4, "normal");
+const initialEngine = createEngine("You", 4, "normal", {}, []);
 
 export function GameShell() {
   const [state, dispatch] = React.useReducer(reducer, initialEngine);
@@ -22,7 +22,7 @@ export function GameShell() {
   const allReady = state.members.every((m) => m.ready);
 
   return (
-    <div className="flex flex-col h-full bg-[var(--color-canvas)] text-[var(--color-ink)]">
+    <div className="flex flex-col h-full bg-[var(--color-bg)] text-[var(--color-ink)]">
       <Sonner />
       {state.phase === "lobby" && (
         <LobbyScreen state={state} dispatch={dispatch} human={human} allReady={allReady} />
@@ -53,8 +53,8 @@ function LobbyScreen({
       <div className="mx-auto max-w-2xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Shuffle Draft</h1>
-            <p className="text-[var(--color-muted)] text-sm">Solo vs bots — set up the room</p>
+            <h1 className="text-[32px] font-bold tracking-tighter leading-none uppercase">Shuffle Draft</h1>
+            <p className="text-[var(--color-ink-dim)] text-[9px] uppercase tracking-wider">Solo vs bots — set up the room</p>
           </div>
           <div className="flex gap-3">
             <Badge variant="outline">{state.nManagers}/{GAME.MAX_MANAGERS} managers</Badge>
@@ -62,33 +62,30 @@ function LobbyScreen({
           </div>
         </div>
 
-        <Card className="mb-7 border-transparent">
-          <CardHeader className="p-5">
-            <CardTitle className="text-sm font-semibold uppercase tracking-wider text-[var(--color-muted)]">Your name</CardTitle>
+        <Card className="mb-7 border-none p-0">
+          <CardHeader className="p-5 border-b border-[var(--color-border)]">
+            <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Your name</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <Input
-              defaultValue={human.displayName}
-              className="w-full bg-transparent border-b border-[var(--color-border)] focus:border-black px-0 text-[var(--color-ink)] placeholder-[var(--color-muted-soft)]"
-            />
+            <Input defaultValue={human.displayName} className="w-full bg-transparent border-b border-[var(--color-border)] focus:border-[var(--color-accent)] px-0 text-[var(--color-ink)] placeholder-[var(--color-ink-dim)]" />
           </CardContent>
         </Card>
 
-        <Card className="mb-7 border-transparent">
-          <CardHeader className="p-5">
-            <CardTitle className="text-sm font-semibold uppercase tracking-wider text-[var(--color-muted)]">Managers</CardTitle>
+        <Card className="mb-7 border-none p-0">
+          <CardHeader className="p-5 border-b border-[var(--color-border)]">
+            <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Managers</CardTitle>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="flex flex-wrap gap-2 p-4">
+          <CardContent className="p-0 space-y-[1px] p-4 bg-[var(--color-border)]">
+            <div className="flex flex-wrap gap-[1px]">
               {[2, 3, 4, 5, 6, 7, 8].map((n) => (
                 <Button
                   key={n}
                   onClick={() => dispatch({ type: "SET_MANAGERS", n })}
                   className={cn(
-                    "border-[var(--color-border)] hover:bg-white/50 hover:border-black/30 text-xs font-medium",
+                    "border-none bg-transparent text-[var(--color-ink-dim)] hover:bg-[var(--color-surface)]/50 text-[9px] font-bold uppercase tracking-wider",
                     n === state.nManagers
-                      ? "border-black bg-black text-white"
-                      : "text-[var(--color-ink-soft)]",
+                      ? "bg-[var(--color-ink)] text-[var(--color-bg)]"
+                      : "",
                   )}
                 >
                   {n}
@@ -98,37 +95,37 @@ function LobbyScreen({
           </CardContent>
         </Card>
 
-        <Card className="mb-10 border-transparent">
-          <CardHeader className="p-5">
-            <CardTitle className="text-sm font-semibold uppercase tracking-wider text-[var(--color-muted)]">Host settings</CardTitle>
+        <Card className="mb-10 border-none p-0">
+          <CardHeader className="p-5 border-b border-[var(--color-border)]">
+            <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Host settings</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 space-y-5 p-4">
-            <div className="grid grid-cols-2 gap-2">
+          <CardContent className="p-0 space-y-[1px] p-4 bg-[var(--color-border)]">
+            <div className="grid grid-cols-2 gap-[1px]">
               {[15, 30, 60, null].map((t) => (
                 <Button
                   key={String(t)}
                   onClick={() => dispatch({ type: "SET_PICK_TIMER", seconds: t })}
                   className={cn(
-                    "border-[var(--color-border)] hover:bg-white/50 hover:border-black/30 text-xs font-medium",
+                    "border-none bg-transparent text-[var(--color-ink-dim)] hover:bg-[var(--color-surface)]/50 text-[9px] font-bold uppercase tracking-wider",
                     state.config.pickTimer === t
-                      ? "border-black bg-black text-white"
-                      : "text-[var(--color-ink-soft)]",
+                      ? "bg-[var(--color-ink)] text-[var(--color-bg)]"
+                      : "",
                   )}
                 >
                   {t === null ? "Off" : `${t}s pick`}
                 </Button>
               ))}
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-[1px]">
               {[60, 120, 180, null].map((t) => (
                 <Button
                   key={String(t)}
                   onClick={() => dispatch({ type: "SET_LINEUP_TIMER", seconds: t })}
                   className={cn(
-                    "border-[var(--color-border)] hover:bg-white/50 hover:border-black/30 text-xs font-medium",
+                    "border-none bg-transparent text-[var(--color-ink-dim)] hover:bg-[var(--color-surface)]/50 text-[9px] font-bold uppercase tracking-wider",
                     state.config.lineupTimer === t
-                      ? "border-black bg-black text-white"
-                      : "text-[var(--color-ink-soft)]",
+                      ? "bg-[var(--color-ink)] text-[var(--color-bg)]"
+                      : "",
                   )}
                 >
                   {t === null ? "Off" : `${t}s lineup`}
@@ -147,7 +144,7 @@ function LobbyScreen({
                 ready: !human.ready,
               })
             }
-            className="w-full lg:w-auto flex-1 bg-white border-[var(--color-border)] hover:bg-black/20 text-[var(--color-ink)]"
+            className="w-full lg:w-auto flex-1 bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-black/20 text-[var(--color-ink)] text-[9px] font-bold uppercase tracking-wider"
           >
             {human.ready ? "Not ready" : "I'm ready"}
           </Button>
@@ -155,10 +152,10 @@ function LobbyScreen({
             onClick={() => dispatch({ type: "START_DRAFT" })}
             disabled={!allReady}
             className={cn(
-              "w-full lg:w-auto flex-1",
+              "w-full lg:w-auto flex-1 text-[9px] font-bold uppercase tracking-wider",
               allReady
-                ? "bg-[var(--color-ink)] text-[var(--color-surface)] hover:bg-[var(--color-ink-soft)]"
-                : "bg-transparent border-[var(--color-border)] text-[var(--color-muted)] cursor-not-allowed",
+                ? "bg-[var(--color-ink)] text-[var(--color-bg)] border-[var(--color-ink)] hover:bg-[var(--color-ink-dim)] hover:border-[var(--color-ink-dim)]"
+                : "bg-transparent border-[var(--color-border)] text-[var(--color-ink-dim)] cursor-not-allowed",
             )}
           >
             Start draft
@@ -166,9 +163,7 @@ function LobbyScreen({
         </div>
 
         {allReady && (
-          <p className="mt-6 text-center text-xs text-[var(--color-pale-green-text)] font-medium">
-            Everyone ready — host can start the draft.
-          </p>
+          <p className="mt-6 text-center text-[9px] text-[var(--color-terminal-green)] font-bold uppercase tracking-wider">Everyone ready — host can start the draft.</p>
         )}
       </div>
     </div>

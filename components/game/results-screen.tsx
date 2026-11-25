@@ -11,7 +11,6 @@ import { Pitch } from "@/components/game/pitch";
 import { cn } from "@/lib/utils";
 
 export function ResultsScreen({ state, dispatch }: { state: EngineState; dispatch: React.Dispatch<EngineAction> }) {
-
   const ranked = [...state.members].sort(
     (a, b) => (state.teamRatings[b.id] ?? 0) - (state.teamRatings[a.id] ?? 0),
   );
@@ -41,21 +40,21 @@ export function ResultsScreen({ state, dispatch }: { state: EngineState; dispatc
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="px-5 py-4 border-b border-[var(--color-border)] bg-white sticky top-0 z-10">
-        <h2 className="text-lg font-bold flex items-center gap-2">Results</h2>
+      <header className="px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-10">
+        <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase flex items-center gap-2">Results</h1>
       </header>
 
       <div className="p-5 lg:p-8 overflow-y-auto">
         {voteResults && (
-          <div className="mb-7 p-5 rounded-sm border border-[var(--color-pale-yellow-text)]/20 bg-[var(--color-pale-yellow-bg)]">
+          <div className="mb-7 p-5 border border-[var(--color-accent)] bg-[var(--color-accent)]/10 shadow-[4px_4px_0px_var(--color-accent)]">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-lg">·</span>
-              <span className="font-bold">Winner:{" "}
+              <span className="text-[16px]">·</span>
+              <span className="font-bold uppercase">Winner:{" "}
                 {voteResults.winner
                   ? state.members.find((m) => m.id === voteResults.winner)?.displayName
                   : "Tie"}</span>
             </div>
-            <div className="text-xs text-[var(--color-muted)]">
+            <div className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">
               {voteResults.ties.length > 1
                 ? `Tie between ${voteResults.ties.map((t) => state.members.find((m) => m.id === t)?.displayName).join(", ")}`
                 : `Most votes (tie broken by team rating)`}
@@ -63,7 +62,7 @@ export function ResultsScreen({ state, dispatch }: { state: EngineState; dispatc
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[var(--color-border)]">
           {ranked.map((m, i) => {
             const lineup = state.lineups[m.id];
             const formation = lineup?.formationId ? FORMATIONS.find((f) => f.id === lineup.formationId) : null;
@@ -78,19 +77,19 @@ export function ResultsScreen({ state, dispatch }: { state: EngineState; dispatc
               }
             }
             return (
-              <Card key={m.id} className="border-transparent hover:border-black/30">
-                <CardHeader className="p-4">
+              <Card key={m.id} className="border-none p-0 bg-[var(--color-surface)]">
+                <CardHeader className="p-4 border-b border-[var(--color-border)]">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[var(--color-muted)]">#{i + 1}</span>
-                      <CardTitle className="text-sm font-semibold">{m.displayName}</CardTitle>
+                      <span className="font-mono text-[var(--color-ink-dim)]">#{i + 1}</span>
+                      <CardTitle className="text-sm font-bold uppercase">{m.displayName}</CardTitle>
                     </div>
                     <Badge>{rating.toFixed(1)}</Badge>
                   </div>
-                  <div className="flex items-center gap-1 mt-1.5 text-xs">
+                  <div className="flex items-center gap-1 mt-1.5 text-[10px]">
                     {formation && <span className="font-mono">{formation.name}</span>}
-                    <span className="text-[var(--color-muted-soft)]">·</span>
-                    <span className="font-mono text-[var(--color-muted)]">{votesReceived} vote{votesReceived !== 1 ? "s" : ""}</span>
+                    <span className="w-px h-3 bg-[var(--color-border-bright)]"></span>
+                    <span className="number-mono text-[var(--color-ink-dim)]">{votesReceived} vote{votesReceived !== 1 ? "s" : ""}</span>
                   </div>
                 </CardHeader>
                 <CardContent className="p-2">
@@ -104,10 +103,10 @@ export function ResultsScreen({ state, dispatch }: { state: EngineState; dispatc
         </div>
 
         <div className="mt-8 flex items-center gap-2">
-          <Button onClick={copySquads} className="w-full lg:w-auto flex-1 bg-white/50 border-[var(--color-border)] hover:bg-white text-[var(--color-ink)]">
+          <Button onClick={copySquads} className="w-full lg:w-auto flex-1 bg-[var(--color-surface)] border-[var(--color-border)] hover:bg-white/50 text-[var(--color-ink)]">
             Copy squads
           </Button>
-          <Button variant="outline" className="flex-1 border-[var(--color-border)] hover:bg-white/50 text-[var(--color-ink-soft)]">
+          <Button variant="outline" className="flex-1 border-[var(--color-border)] hover:bg-white/50 text-[var(--color-ink-dim)]">
             Play again
           </Button>
         </div>

@@ -94,58 +94,57 @@ export function LineupScreen({
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="flex flex-col lg:flex-row justify-between gap-3 px-5 py-4 border-b border-[var(--color-border)] bg-white sticky top-0 z-20">
+      <header className="flex flex-col lg:flex-row justify-between gap-3 px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
         <div>
-          <div className="flex items-center gap-2 text-[10px] text-[var(--color-muted)] uppercase tracking-[0.14em]">
+          <div className="flex items-center gap-2 text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider">
             <span>·</span>
             <span>Lineup phase</span>
           </div>
-          <h2 className="text-lg font-bold">Arrange your XI</h2>
+          <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase">Arrange your XI</h1>
         </div>
         <div className="flex items-end gap-4">
           {state.config.lineupTimer && state.timerSecondsLeft != null ? (
-            <div className="w-[140px] h-2 bg-[var(--color-border)] rounded-full overflow-hidden">
-              <Progress value={(state.timerSecondsLeft / state.config.lineupTimer!) * 100} className="h-full bg-[var(--color-pale-yellow-text)]" />
+            <div className="w-[140px] h-2 bg-[var(--color-border)] rounded-none overflow-hidden">
+              <Progress value={(state.timerSecondsLeft / state.config.lineupTimer!) * 100} className="h-full bg-[var(--color-accent)]" />
             </div>
           ) : null}
-          <Badge variant="outline" className="number-mono text-sm">
+          <Badge variant="outline" className="number-mono text-[9px]">
             {lineup?.slots.length ?? 0}/11
           </Badge>
         </div>
       </header>
 
-      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden p-4 lg:p-6 gap-6">
-        {/* Left: drafted players as tappable cards */}
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden p-4 lg:p-6 gap-4">
         <div className="lg:w-[340px] flex-shrink-0 space-y-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[var(--color-muted-soft)] block mb-3">Drafted players</span>
-            <div className="space-y-1.5">
+            <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Drafted players</span>
+            <div className="space-y-[1px] bg-[var(--color-border)]">
               {drafted.map((d) => {
                 const placed = lineup?.slots.some((s) => s.playerId === d.player.id);
                 return (
                   <div
                     key={d.player.id}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-[12px] border cursor-pointer transition-colors",
+                      "flex items-center gap-3 px-3 py-2.5 cursor-pointer bg-[var(--color-surface)]",
                       selectedPlayerId === d.player.id
-                        ? "border-black/40 bg-[#f5f5f2]"
+                        ? "border-l-2 border-l-[var(--color-accent)] bg-[var(--color-accent)]/10"
                         : placed
-                          ? "border-[var(--color-pale-green-text)]/20 bg-[var(--color-pale-green-bg)]/50"
-                          : "border-transparent hover:bg-white hover:border-[var(--color-border)]/40",
+                          ? "border-l-2 border-l-[var(--color-terminal-green)] bg-[var(--color-terminal-green)]/10"
+                          : "border-l-2 border-l-transparent hover:bg-white/50",
                     )}
                     onClick={() => setSelectedPlayerId(selectedPlayerId === d.player.id ? null : d.player.id)}
                   >
                     {placed ? (
-                      <span className="text-[10px] font-bold text-[var(--color-pale-green-text)]">•</span>
+                      <span className="text-[10px] font-bold text-[var(--color-terminal-green)]">•</span>
                     ) : (
                       <span className="text-[11px]">{d.player.nation}</span>
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium truncate">{d.player.name}</span>
-                        <span className="number-mono text-xs font-bold text-[var(--color-muted)]">{d.player.rating}</span>
+                        <span className="text-sm font-bold truncate uppercase">{d.player.name}</span>
+                        <span className="number-mono text-xs font-bold text-[var(--color-ink-dim)]">{d.player.rating}</span>
                       </div>
-                      <span className={cn("inline-block px-1.5 py-0.5 rounded text-[8px] font-bold leading-none", posColor(d.player.position))}>
+                      <span className={cn("inline-block px-1.5 py-0.5 rounded-none text-[8px] font-bold uppercase", posColor(d.player.position))}>
                         {d.player.position}
                       </span>
                     </div>
@@ -153,24 +152,23 @@ export function LineupScreen({
                 );
               })}
               {drafted.length === 0 && (
-                <div className="text-center py-6 text-sm text-[var(--color-muted)] italic">No players drafted yet.</div>
+                <div className="text-center py-6 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">No players drafted yet.</div>
               )}
             </div>
           </div>
-          <div className="space-y-2">
-            <Button onClick={handleAutoArrange} disabled={!lineup?.formationId} className="w-full text-sm">
+          <div className="space-y-[1px] bg-[var(--color-border)]">
+            <Button onClick={handleAutoArrange} disabled={!lineup?.formationId} className="w-full text-[9px] font-bold uppercase tracking-wider border-none bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-surface)]/50 py-2 text-left">
               Auto-arrange
             </Button>
-            <Button onClick={handleSuggest} variant="outline" className="w-full text-sm">
+            <Button onClick={handleSuggest} variant="outline" className="w-full text-[9px] font-bold uppercase tracking-wider border-none bg-transparent text-[var(--color-ink-dim)] hover:bg-[var(--color-surface)]/50 py-2 text-left">
               Suggest best formation
             </Button>
           </div>
         </div>
 
-        {/* Right: formation + pitch */}
-        <div className="flex-1 min-w-0 space-y-5">
+        <div className="flex-1 min-w-0 space-y-4">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.14em] font-medium text-[var(--color-muted-soft)] block mb-3">Formation</span>
+            <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Formation</span>
             <Select onValueChange={handleSelectFormation} defaultValue={lineup?.formationId ?? null}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder={lineup?.formationId ? FORMATIONS.find((f) => f.id === lineup.formationId)!.name : "Choose formation"} />
@@ -198,17 +196,16 @@ export function LineupScreen({
               effectiveRatingBySlot={effRating}
             />
           </div>
-          <p className="text-center text-xs text-[var(--color-muted)] italic">
+          <p className="text-center text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">
             Tap a player, then tap a slot to place. Tap an occupied slot to lift/swap.
           </p>
         </div>
 
-        {/* Bottom bar: rating + lock */}
         <div className="mt-4 border-t border-[var(--color-border)] pt-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
           <div>
-            <div className="text-xs text-[var(--color-muted)] uppercase tracking-[0.12em]">Team rating</div>
-            <div className="text-2xl font-bold number-mono">{comp ? comp.teamRating.toFixed(1) : "—"}</div>
-            <div className="text-xs text-[var(--color-muted)]">Chemistry +{comp?.chemistry ?? 0}</div>
+            <div className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">Team rating</div>
+            <div className="text-[22px] font-bold number-mono">{comp ? comp.teamRating.toFixed(1) : "—"}</div>
+            <div className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">Chemistry +{comp?.chemistry ?? 0}</div>
           </div>
           <div className="flex gap-2">
             <Button
@@ -220,8 +217,8 @@ export function LineupScreen({
               className={cn(
                 "w-full lg:w-auto flex-1",
                 canLock && !lineup?.locked && !allLocked
-                  ? "bg-[var(--color-ink)] text-[var(--color-surface)] hover:bg-[var(--color-ink-soft)]"
-                  : "bg-transparent border-[var(--color-border)] text-[var(--color-muted)] cursor-not-allowed",
+                  ? "bg-[var(--color-accent)] text-[var(--color-bg)] border-[var(--color-accent)] hover:bg-[var(--color-accent-dim)] hover:border-[var(--color-accent-dim)]"
+                  : "bg-transparent border-[var(--color-border)] text-[var(--color-ink-dim)] cursor-not-allowed",
               )}
             >
               {lineup?.locked ? "Locked in" : "Lock in XI"}
@@ -236,7 +233,7 @@ export function LineupScreen({
       </div>
 
       {allLocked && (
-        <div className="p-4 text-center text-xs text-[var(--color-muted)]">All managers locked in — voting begins.</div>
+        <div className="p-4 text-center text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">All managers locked in — voting begins.</div>
       )}
     </div>
   );
@@ -244,10 +241,10 @@ export function LineupScreen({
 
 function posColor(position: string) {
   switch (position) {
-    case "GK": return "bg-[var(--color-pale-blue-bg)] text-[var(--color-pale-blue-text)] border-[var(--color-pale-blue-text)]/30";
-    case "DEF": return "bg-[var(--color-pale-green-bg)] text-[var(--color-pale-green-text)] border-[var(--color-pale-green-text)]/30";
-    case "MID": return "bg-[var(--color-pale-yellow-bg)] text-[var(--color-pale-yellow-text)] border-[var(--color-pale-yellow-text)]/30";
-    case "FWD": return "bg-[var(--color-pale-red-bg)] text-[var(--color-pale-red-text)] border-[var(--color-pale-red-text)]/30";
+    case "GK": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "DEF": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "MID": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "FWD": return "border border-[var(--color-accent)] bg-transparent text-[var(--color-accent)]";
   }
-  return "border-[var(--color-border)] text-[var(--color-muted)]";
+  return "border border-[var(--color-border)] text-[var(--color-ink-dim)]";
 }

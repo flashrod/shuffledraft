@@ -33,16 +33,16 @@ export function VoteScreen({
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="px-5 py-4 border-b border-[var(--color-border)] bg-white sticky top-0 z-20">
-        <div className="flex items-center gap-2 text-[10px] text-[var(--color-muted)] uppercase tracking-[0.14em] mb-2">
+      <header className="px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
+        <div className="flex items-center gap-2 text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider mb-2">
           <span>·</span>
           <span>Secret vote — pick the best XI (not your own)</span>
         </div>
-        <h2 className="text-lg font-bold">Vote</h2>
+        <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase">Vote</h1>
       </header>
 
       <div className="p-4 lg:p-6 overflow-y-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[var(--color-border)]">
           {others.map((m) => {
             const lineup = state.lineups[m.id];
             const comp = state.lineupComputations[m.id];
@@ -61,10 +61,10 @@ export function VoteScreen({
               <div
                 key={m.id}
                 className={cn(
-                  "rounded-[14px] border bg-white shadow-sm transition-all duration-200",
+                  "border border-[var(--color-border)] bg-[var(--color-surface)] transition-colors",
                   voted
-                    ? "border-[var(--color-pale-yellow-text)]/30 bg-[var(--color-pale-yellow-bg)]/40 shadow-[0_0_0_1px_rgba(149,100,0,0.15)]"
-                    : "border-[var(--color-border)]/40 hover:border-black/40 hover:shadow-md",
+                    ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 shadow-[4px_4px_0px_var(--color-accent)]"
+                    : "border-transparent hover:border-[var(--color-ink)] hover:bg-white/50",
                 )}
                 onClick={() => !hasVoted && handleVote(m.id)}
                 role="button"
@@ -78,9 +78,9 @@ export function VoteScreen({
               >
                 <div className="p-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold">{m.displayName}</span>
+                    <span className="text-sm font-bold uppercase">{m.displayName}</span>
                     {voted && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold text-[var(--color-pale-yellow-text)] bg-[var(--color-pale-yellow-bg)]/60 border-[var(--color-pale-yellow-text)]/20">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[9px] font-bold uppercase text-[var(--color-bg)] bg-[var(--color-accent)] border border-[var(--color-accent)]">
                         <span className="text-[8px]">•</span> Your vote
                       </span>
                     )}
@@ -89,8 +89,8 @@ export function VoteScreen({
                     {formation && (
                       <span className="font-mono opacity-70">{formation.name}</span>
                     )}
-                    <span className="w-px h-3 bg-[var(--color-border-strong)]"></span>
-                    <span className="number-mono text-[var(--color-muted-soft)]">{rating.toFixed(1)}</span>
+                    <span className="w-px h-3 bg-[var(--color-border-bright)]"></span>
+                    <span className="number-mono text-[var(--color-ink-dim)]">{rating.toFixed(1)}</span>
                   </div>
                 </div>
                 <div className="h-[180px] flex items-center justify-center p-2">
@@ -103,8 +103,8 @@ export function VoteScreen({
                 </div>
                 <div className="p-3 text-center">
                   <span className={cn(
-                    "text-xs font-medium",
-                    hasVoted ? "text-[var(--color-muted)]" : "text-[var(--color-ink-soft)]",
+                    "text-[9px] font-bold uppercase tracking-wider",
+                    hasVoted ? "text-[var(--color-ink-dim)]" : "text-[var(--color-ink-dim)]",
                   )}>
                     {hasVoted ? (voted ? "Your vote" : "Voted") : "Tap to vote"}
                   </span>
@@ -115,18 +115,18 @@ export function VoteScreen({
         </div>
 
         {!hasVoted && (
-          <div className="mt-5 text-center text-xs text-[var(--color-muted)] italic">
+          <div className="mt-5 text-center text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">
             Your vote is secret until the reveal.
           </div>
         )}
 
-        <div className="mt-8 flex items-center gap-3 text-xs text-[var(--color-muted)]">
+        <div className="mt-8 flex items-center gap-3 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">
           <span>Locked in:</span>
           {state.members.map((m) => (
-            <span key={m.id} className={cn("flex items-center gap-1.5", state.lineups[m.id]?.locked ? "text-[var(--color-pale-green-text)]" : "text-[var(--color-muted)]")}>
+            <span key={m.id} className={cn("flex items-center gap-1.5", state.lineups[m.id]?.locked ? "text-[var(--color-terminal-green)]" : "text-[var(--color-ink-dim)]")}>
               {m.displayName}
               {state.lineups[m.id]?.locked && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-pale-green-text)]"></span>
+                <span className="w-1.5 h-1.5 rounded-none bg-[var(--color-terminal-green)]"></span>
               )}
             </span>
           ))}

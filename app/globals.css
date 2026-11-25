@@ -1,111 +1,120 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #f7f6f3;
-  --color-surface: #ffffff;
-  --color-board: #f1efe9; /* table surface, slightly warmer than canvas */
-  --color-border: #eaeaea;
-  --color-border-strong: #d4d4d4;
-  --color-ink: #111111;
-  --color-ink-soft: #2f3437;
-  --color-muted: #787774;
-  --color-muted-soft: #a8a8a2;
+  /* Tactical Telemetry & CRT Terminal substrate (dark, exclusive) */
+  --color-bg: #0a0a0a;          /* deactivated CRT — never pure #000 */
+  --color-surface: #121212;     /* compartment surface */
+  --color-border: #333333;      /* compartment hairline */
+  --color-border-bright: #555555;
+  --color-ink: #eaeaea;         /* white phosphor — primary text */
+  --color-ink-dim: #888888;     /* secondary text */
+  --color-dim: #444444;         /* tertiary text */
 
-  /* Spot pastels (semantic accents only, used for position & tier) */
-  --color-pale-red-bg: #fdebec;
-  --color-pale-red-text: #9f2f2d;
-  --color-pale-blue-bg: #e1f3fe;
-  --color-pale-blue-text: #1f6c9f;
-  --color-pale-green-bg: #edf3ec;
-  --color-pale-green-text: #346538;
-  --color-pale-yellow-bg: #fbf3db;
-  --color-pale-yellow-text: #956400;
+  /* Accent: Aviation/Hazard Red — the ONLY accent color. Used for alerts,
+     cross-line penalties, strike-throughs, vital highlights. */
+  --color-accent: #e61919;
+  --color-accent-dim: #7a0f0f;
+
+  /* Terminal Green — optional, single specific UI element only. */
+  --color-terminal-green: #4af626;
+
+  /* Macro typography: Neo-Grotesque Heavy Sans */
+  --font-macro: "Geist Sans", system-ui, -apple-system, sans-serif;
+  /* Micro typography: Monospace / Technical */
+  --font-micro: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--color-canvas);
+  background: var(--color-bg);
   color: var(--color-ink);
-  font-family: "Geist Sans", system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
+  font-family: var(--font-macro);
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  margin: 0;
 }
 
-/* Typography scale — editorial, intentional */
+/* Mechanical noise — unified physical grain across the DOM root */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 50;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* CRT scanlines — horizontal electron beam sweep */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 51;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.18) 2px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+}
+
+/* Macro typography — structural headers */
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Geist Sans", system-ui, -apple-system, sans-serif;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-family: var(--font-macro);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin: 0;
 }
 
-.number-mono {
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+/* Micro typography — data & telemetry */
+.micro, .number-mono, data, samp, kbd, output {
+  font-family: var(--font-micro);
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Subtle scroll entry reveal */
+/* Visible compartment — 1px hairline, 90-degree corners, no shadow */
+.compartment {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Grid determinism — razor-thin dividing lines via contrasting gap */
+.grid-deterministic {
+  display: grid;
+  gap: 1px;
+  background: var(--color-border);
+}
+.grid-deterministic > * {
+  background: var(--color-surface);
+}
+
+/* Focus — stark outline, no glow */
+.focus-visible-industrial:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Reveal — instant, no soft motion (brutalist) */
 .reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
-    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
 }
 
-/* Board surface */
-.board {
-  background: var(--color-board);
-}
-
-/* Position zone header */
-.zone-label {
-  @apply text-[10px] uppercase tracking-[0.14em] font-medium block mb-2 px-2;
-}
-
-/* Trading-card style player card base */
-.player-card {
-  @apply rounded-[14px] border border-[var(--color-border)] bg-white shadow-sm;
-  min-height: 128px;
-  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
-  cursor: pointer;
-}
-.player-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-  border-color: rgba(0,0,0,0.25);
-}
-.player-card:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
-.player-card.selected {
-  border-color: var(--color-pale-yellow-text);
-  box-shadow: 0 0 0 3px rgba(149, 100, 0, 0.15);
-}
-
-/* Tally strip */
-.tally-strip {
-  @apply flex items-center gap-4 px-4 py-2;
-}
-
-/* Bottom sheet backdrop */
-.sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
-  z-index: 40;
-}
-
-/* Focus visible for accessibility */
-.focus-ring:focus-visible {
-  outline: 2px solid var(--color-pale-yellow-text);
+/* Hide standard focus rings; we use stark outline instead */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }

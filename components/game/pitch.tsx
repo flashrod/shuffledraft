@@ -8,21 +8,21 @@ const PITCH_H = 74;
 
 function lineColor(line: "GK" | "DEF" | "MID" | "FWD") {
   switch (line) {
-    case "GK": return "var(--color-pale-blue-text)";
-    case "DEF": return "var(--color-pale-green-text)";
-    case "MID": return "var(--color-pale-yellow-text)";
-    case "FWD": return "var(--color-pale-red-text)";
+    case "GK": return "var(--color-ink)";
+    case "DEF": return "var(--color-ink)";
+    case "MID": return "var(--color-ink)";
+    case "FWD": return "var(--color-accent)";
   }
 }
 
 function posColor(position: string) {
   switch (position) {
-    case "GK": return "var(--color-pale-blue-text)";
-    case "DEF": return "var(--color-pale-green-text)";
-    case "MID": return "var(--color-pale-yellow-text)";
-    case "FWD": return "var(--color-pale-red-text)";
+    case "GK": return "var(--color-ink)";
+    case "DEF": return "var(--color-ink)";
+    case "MID": return "var(--color-ink)";
+    case "FWD": return "var(--color-accent)";
   }
-  return "var(--color-muted)";
+  return "var(--color-ink-dim)";
 }
 
 export interface PitchSlotProps {
@@ -49,32 +49,31 @@ export function PitchSlot({
 
   return (
     <g
-      className={cn("cursor-pointer select-none transition-transform duration-200", occupied ? "scale-105" : "")}
+      className={cn("cursor-pointer select-none", occupied ? "" : "")}
       onClick={(editable && !occupied) ? (() => onPlace?.("")) : undefined}
     >
       <circle
         cx={cx}
         cy={cy}
-        r={occupied ? 7 : 4.5}
+        r={occupied ? 7 : 4}
         fill={occupied ? color : "transparent"}
         stroke={color}
-        strokeWidth={occupied ? 0 : 2}
-        strokeOpacity={occupied ? 1 : 0.45}
-        className="transition-all duration-200"
+        strokeWidth={occupied ? 0 : 1}
+        strokeOpacity={occupied ? 1 : 0.5}
       />
       {occupied && player && (
         <foreignObject x={cx - 22} y={cy - 28} width={44} height={44}>
           <div
             className={cn(
-              "absolute flex flex-col items-center px-1.5 pb-1 text-[8px] font-bold leading-none shadow-sm",
-              "border border-solid rounded bg-white/80 backdrop-blur-sm",
-              crossLine ? "border-[var(--color-pale-red-text)]/40 bg-[var(--color-pale-red-bg)]/90" : "border-[var(--color-border)]/50 bg-white/90",
+              "absolute flex flex-col items-center px-1.5 pb-1 text-[8px] font-bold uppercase leading-none shadow-none",
+              "border border-solid rounded-none bg-[var(--color-surface)]/90",
+              crossLine ? "border-[var(--color-accent)] bg-[var(--color-accent)]/20" : "border-[var(--color-border)]",
             )}
             style={{ transform: `translate(-50%, -50%)` }}
           >
             <span className="truncate w-[40px] leading-none">{player.name}</span>
             {crossLine && effectiveRating !== undefined ? (
-              <span className="mt-0.5 text-[7px] text-[var(--color-pale-red-text)] bg-[var(--color-pale-red-bg)] px-1 leading-none">
+              <span className="mt-0.5 text-[7px] text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1 leading-none border border-[var(--color-accent)]/20">
                 {effectiveRating}
               </span>
             ) : null}
@@ -83,16 +82,15 @@ export function PitchSlot({
       )}
       {editable && !occupied && (
         <rect
-          x={cx - 11}
-          y={cy - 11}
-          width={22}
-          height={22}
+          x={cx - 10}
+          y={cy - 10}
+          width={20}
+          height={20}
           fill="transparent"
           stroke={color}
-          strokeWidth={1.5}
-          strokeDasharray="3,3"
+          strokeWidth={1}
+          strokeDasharray="2,2"
           strokeOpacity={0.5}
-          className="hover:fill-black/5 transition-colors"
         />
       )}
     </g>
@@ -114,26 +112,20 @@ export function Pitch({
 }: PitchProps) {
   return (
     <svg
-      className="w-full max-w-md h-[56vh] max-h-[400px] rounded-[14px] border border-[var(--color-border)] bg-white shadow-sm overflow-hidden"
+      className="w-full max-w-md h-[56vh] max-h-[400px] rounded-none border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden"
       viewBox={`0 0 ${PITCH_W} ${PITCH_H}`}
       preserveAspectRatio="xMidYMid meet"
       style={{ touchAction: "none" }}
     >
-      <defs>
-        <pattern id="grass" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-          <rect width="10" height="10" fill="var(--color-surface)" />
-          <path d="M0 5 L10 5 M5 0 L5 10" stroke="rgba(0,0,0,0.03)" strokeWidth="1" />
-        </pattern>
-      </defs>
-      <rect width={PITCH_W} height={PITCH_H} fill="url(#grass)" />
-      <line x1={50} y1={0} x2={50} y2={PITCH_H} stroke="rgba(0,0,0,0.10)" strokeWidth={2} strokeDasharray="6,6" />
-      <circle cx={50} cy={PITCH_H / 2} r={9} fill="none" stroke="rgba(0,0,0,0.10)" strokeWidth={2} />
-      <rect x={0} y={PITCH_H - 4} width={PITCH_W} height={4} fill="rgba(0,0,0,0.08)" />
-      <rect x={0} y={0} width={PITCH_W} height={4} fill="rgba(0,0,0,0.08)" />
-      <rect x={15} y={PITCH_H - 18} width={20} height={14} fill="rgba(0,0,0,0.03)" stroke="rgba(0,0,0,0.10)" strokeWidth={1} />
-      <rect x={65} y={PITCH_H - 18} width={20} height={14} fill="rgba(0,0,0,0.03)" stroke="rgba(0,0,0,0.10)" strokeWidth={1} />
-      <rect x={15} y={4} width={20} height={14} fill="rgba(0,0,0,0.03)" stroke="rgba(0,0,0,0.10)" strokeWidth={1} />
-      <rect x={65} y={4} width={20} height={14} fill="rgba(0,0,0,0.03)" stroke="rgba(0,0,0,0.10)" strokeWidth={1} />
+      <rect width={PITCH_W} height={PITCH_H} fill="var(--color-surface)" />
+      <line x1={50} y1={0} x2={50} y2={PITCH_H} stroke="var(--color-border)" strokeWidth={1} strokeDasharray="4,4" />
+      <circle cx={50} cy={PITCH_H / 2} r={9} fill="none" stroke="var(--color-border)" strokeWidth={1} />
+      <rect x={0} y={PITCH_H - 3} width={PITCH_W} height={3} fill="var(--color-ink)" />
+      <rect x={0} y={0} width={PITCH_W} height={3} fill="var(--color-ink)" />
+      <rect x={15} y={PITCH_H - 16} width={20} height={13} fill="none" stroke="var(--color-border)" strokeWidth={1} />
+      <rect x={65} y={PITCH_H - 16} width={20} height={13} fill="none" stroke="var(--color-border)" strokeWidth={1} />
+      <rect x={15} y={3} width={20} height={13} fill="none" stroke="var(--color-border)" strokeWidth={1} />
+      <rect x={65} y={3} width={20} height={13} fill="none" stroke="var(--color-border)" strokeWidth={1} />
 
       {slots.map((slot, idx) => {
         const fill = fills[idx];
