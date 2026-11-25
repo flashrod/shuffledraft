@@ -252,35 +252,99 @@ export function draftSlotForPlayer(player: Player): Position {
 }
 
 /**
+ * Position targets for bot drafting.
+ * Each position has a min (must fill) and max (don't exceed) target count.
+ */
+const BOT_POSITION_TARGETS: Record<Position, { min: number; max: number }> = {
+  GK: { min: 1, max: 2 },
+  DEF: { min: 4, max: 5 },
+  MID: { min: 3, max: 5 },
+  FWD: { min: 2, max: 4 },
+};
+
+/**
+ * How many picks remain in the draft (used for urgency calculation).
+ */
+function roundsRemaining(currentRound: number): number {
+  return Math.max(0, GAME.ROUNDS - currentRound - 1);
+}
+
+/**
  * Score a candidate for a bot during the draft.
- * Bots draft toward a balanced target (1 GK, 4 DEF, 3-4 MID, 2-3 FWD).
- * Noise added by difficulty. Avoid filling a position beyond its target max.
+ *
+ * Scoring factors:
+ * 1. Positional need - bots prioritize positions they still need to fill
+ * 2. Urgency - if few rounds remain and a position isn't filled yet, boost it
+ * 3. Rating - base rating modified by noise based on difficulty
+ * 4. Chemistry (hard only) - slight boost for players sharing nation with drafted teammates
+ * 5. Scarcity - if few high-rated players remain at this position, boost slightly
  */
 export function botDraftScore(
   player: Player,
-  currentCounts: Record<Position, number>,
-  difficulty: "easy" | "normal" | "hard",
+  ctx: {
+    currentCounts: Record<Position, number>;
+    difficulty: "easy" | "normal" | "hard";
+    roundsRemaining: number;
+    draftedByBot: Player[]; // players this bot has already drafted
+    availableInSet: Player[]; // all players currently in this set (for scarcity calc)
+  },
   rng: () => number = Math.random,
 ): number {
   const pos = player.position;
-  const max = {
-    GK: BOT_TARGET.GK,
-    DEF: BOT_TARGET.DEF_MAX,
-    MID: BOT_TARGET.MID_MAX,
-    FWD: BOT_TARGET.FWD_MAX,
-  } as Record<Position, number>;
+  const target = BOT_POSITION_TARGETS[pos];
+  const counts = ctx.currentCounts;
+  const remainingRounds = ctx.roundsRemaining;
 
-  // Already at max for this position -> heavily discourage (avoid wasting GK).
-  if (currentCounts[pos] >= max[pos]) {
-    return -1000 + rng() * 5;
+  // Already at max for this position -> heavily discourage.
+  if (counts[pos] >= target.max) {
+    return -2000 + rng() * 10;
   }
 
+  // Calculate positional need score (0-100).
+  // If we have fewer than min for this position, it's high priority.
+  const deficit = Math.max(0, target.min - counts[pos]);
+  const needScore = (deficit / target.min) * 60;
+
+  // Urgency: if few rounds remain and position isn't at min yet, boost heavily.
+  let urgency = 0;
+  if (counts[pos] < target.min) {
+    const roundsNeeded = target.min - counts[pos];
+    // If rounds remaining <= rounds needed * 3, start getting urgent.
+    if (remainingRounds <= roundsNeeded * 3) {
+      urgency = 30 * (1 - remainingRounds / (roundsNeeded * 3));
+    }
+  }
+
+  // Base rating component (0-100 scaled).
+  const ratingScore = player.rating;
+
+  // Difficulty noise.
+  const { difficulty } = ctx;
   let noise = 0;
-  if (difficulty === "easy") noise = rng() * BOT_NOISE.easy;
-  else if (difficulty === "normal") noise = rng() * BOT_NOISE.normal;
+  if (difficulty === "easy") noise = rng() * BOT_NOISE.easy; // up to 8 points
+  else if (difficulty === "normal") noise = rng() * BOT_NOISE.normal; // up to 4 points
   // hard: no noise
 
-  return player.rating + noise;
+  // Chemistry bonus (hard only): +2 per same-nation teammate already drafted, cap +6.
+  let chemBonus = 0;
+  if (difficulty === "hard") {
+    const sameNationCount = ctx.draftedByBot.filter((p) => p.nation === player.nation).length;
+    chemBonus = Math.min(sameNationCount * 2, 6);
+  }
+
+  // Scarcity bonus: GK is harder to replace than other positions.
+  // Only applies when rounds are limited (don't panic early in the draft).
+  let scarcityBonus = 0;
+  if (counts[pos] === 0 && pos === "GK" && remainingRounds <= 6) {
+    scarcityBonus = 40;
+  } else if (counts[pos] === 0 && pos === "DEF" && remainingRounds <= 4) {
+    scarcityBonus = 20;
+  } else if (counts[pos] === 0 && pos === "MID" && remainingRounds <= 3) {
+    scarcityBonus = 10;
+  }
+  // FWD has no scarcity bonus (most abundant position).
+
+  return ratingScore + needScore + urgency + noise + chemBonus + scarcityBonus;
 }
 
 /**
@@ -288,14 +352,21 @@ export function botDraftScore(
  */
 export function botDraftPick(
   setPlayers: Player[],
-  currentCounts: Record<Position, number>,
-  difficulty: "easy" | "normal" | "hard",
+  ctx: {
+    currentCounts: Record<Position, number>;
+    difficulty: "easy" | "normal" | "hard";
+    roundsRemaining: number;
+    draftedByBot: Player[];
+  },
   rng: () => number = Math.random,
 ): Player {
   let best: Player | null = null;
   let bestScore = -Infinity;
   for (const p of setPlayers) {
-    const score = botDraftScore(p, currentCounts, difficulty, rng);
+    const score = botDraftScore(p, {
+      ...ctx,
+      availableInSet: setPlayers,
+    }, rng);
     if (score > bestScore) {
       bestScore = score;
       best = p;

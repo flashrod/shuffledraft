@@ -330,7 +330,12 @@ export function reducer(state: EngineState, action: EngineAction): EngineState {
         if (setPlayers.length === 0) continue;
         const counts: Record<Position, number> = { GK: 0, DEF: 0, MID: 0, FWD: 0 };
         for (const d of (next.drafted[m.id] ?? [])) counts[d.player.position as Position]++;
-        const pick = botDraftPick(setPlayers, counts, m.botDifficulty, Math.random);
+        const pick = botDraftPick(setPlayers, {
+          currentCounts: counts,
+          difficulty: m.botDifficulty,
+          roundsRemaining: roundsRemaining(next.round),
+          draftedByBot: (next.drafted[m.id] ?? []).map((d) => d.player),
+        }, Math.random);
         next = reducer(next, { type: "PICK", memberId: m.id, playerId: pick.id });
       }
       return next;
@@ -607,7 +612,12 @@ export function botTurn(state: EngineState): EngineState {
     // current counts for this bot
     const counts: Record<Position, number> = { GK: 0, DEF: 0, MID: 0, FWD: 0 };
     for (const d of (next.drafted[m.id] ?? [])) counts[d.player.position as Position]++;
-    const pick = botDraftPick(setPlayers, counts, m.botDifficulty, Math.random);
+    const pick = botDraftPick(setPlayers, {
+      currentCounts: counts,
+      difficulty: m.botDifficulty,
+      roundsRemaining: roundsRemaining(next.round),
+      draftedByBot: (next.drafted[m.id] ?? []).map((d) => d.player),
+    }, Math.random);
     // apply PICK via reducer logic inline (reuse by dispatching)
     next = reducer(next, { type: "PICK", memberId: m.id, playerId: pick.id });
   }

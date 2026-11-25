@@ -230,20 +230,27 @@ describe("bot draft pick", () => {
     makePlayer({ id: "f1", position: "FWD", rating: 90 }),
   ];
 
+  const botCtx = (counts: Record<Position, number>, difficulty: "easy" | "normal" | "hard" = "hard") => ({
+    currentCounts: counts,
+    difficulty,
+    roundsRemaining: 10,
+    draftedByBot: [],
+  });
+
   it("picks toward balanced target and avoids filled GK", () => {
     // No GK yet -> may pick GK or high rating
-    let picked = botDraftPick(set, { GK: 0, DEF: 0, MID: 0, FWD: 0 }, "hard", () => 0);
+    let picked = botDraftPick(set, botCtx({ GK: 0, DEF: 0, MID: 0, FWD: 0 }));
     // hard: pure rating -> picks FWD (90)
     expect(picked.id).toBe("f1");
 
     // GK filled -> avoid GK
-    picked = botDraftPick(set, { GK: 1, DEF: 0, MID: 0, FWD: 0 }, "hard", () => 0);
+    picked = botDraftPick(set, botCtx({ GK: 1, DEF: 0, MID: 0, FWD: 0 }));
     expect(picked.id).not.toBe("gk");
   });
 
   it("easy adds noise and can pick lower-rated", () => {
     // rng=0 always -> easy noise 0, pure rating picks f1
-    expect(botDraftPick(set, { GK: 0, DEF: 0, MID: 0, FWD: 0 }, "easy", () => 0).id).toBe("f1");
+    expect(botDraftPick(set, botCtx({ GK: 0, DEF: 0, MID: 0, FWD: 0 }, "easy")).id).toBe("f1");
   });
 
   it("discourages picking position beyond max", () => {
@@ -252,8 +259,32 @@ describe("bot draft pick", () => {
       makePlayer({ id: "d-hi", position: "DEF", rating: 99 }),
       makePlayer({ id: "m-lo", position: "MID", rating: 50 }),
     ];
-    const picked = botDraftPick(set2, { GK: 0, DEF: 4, MID: 0, FWD: 0 }, "hard", () => 0);
+    const picked = botDraftPick(set2, botCtx({ GK: 0, DEF: 4, MID: 0, FWD: 0 }));
     expect(picked.id).toBe("m-lo");
+  });
+
+  it("prioritizes filling minimum positions when rounds are running out", () => {
+    // Only 1 round left, need 1 GK -> should pick GK even if lower rated
+    const set3: Player[] = [
+      makePlayer({ id: "gk-lo", position: "GK", rating: 60 }),
+      makePlayer({ id: "f-hi", position: "FWD", rating: 90 }),
+    ];
+    const ctx = botCtx({ GK: 0, DEF: 0, MID: 0, FWD: 0 }, "hard");
+    ctx.roundsRemaining = 1;
+    const picked = botDraftPick(set3, ctx);
+    expect(picked.id).toBe("gk-lo");
+  });
+
+  it("hard bot values chemistry - same nation gets bonus", () => {
+    const set4: Player[] = [
+      makePlayer({ id: "p-eng-1", position: "MID", rating: 74, nation: "England" }),
+      makePlayer({ id: "p-esp-1", position: "MID", rating: 75, nation: "Spain" }),
+    ];
+    const ctx = botCtx({ GK: 0, DEF: 0, MID: 0, FWD: 0 }, "hard");
+    ctx.draftedByBot = [makePlayer({ id: "p-eng-2", position: "DEF", rating: 70, nation: "England" })];
+    // England MID (74 + 2 chem = 76) should be picked over Spain MID (75)
+    const picked = botDraftPick(set4, ctx);
+    expect(picked.id).toBe("p-eng-1");
   });
 });
 
