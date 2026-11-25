@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -13,6 +14,11 @@ import { cn } from "@/lib/utils";
 import type { Player } from "@/lib/game";
 
 const POSITION_LABEL: Record<string, string> = { GK: "Goalkeeper", DEF: "Defender", MID: "Midfielder", FWD: "Forward" };
+
+const slotVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0 },
+};
 
 export function LineupScreen({
   state,
@@ -94,65 +100,66 @@ export function LineupScreen({
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="flex flex-col lg:flex-row justify-between gap-3 px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
+      <header className="flex flex-col gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
         <div>
-          <div className="flex items-center gap-2 text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">
             <span>·</span>
             <span>Lineup phase</span>
           </div>
-          <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase">Arrange your XI</h1>
+          <h1 className="text-[18px] font-bold tracking-tighter leading-none uppercase">Arrange your XI</h1>
         </div>
-        <div className="flex items-end gap-4">
+        <div className="flex items-end gap-3">
           {state.config.lineupTimer && state.timerSecondsLeft != null ? (
-            <div className="w-[140px] h-2 bg-[var(--color-border)] rounded-none overflow-hidden">
+            <div className="w-[120px] h-[2px] bg-[var(--color-border)] rounded-none overflow-hidden">
               <Progress value={(state.timerSecondsLeft / state.config.lineupTimer!) * 100} className="h-full bg-[var(--color-accent)]" />
             </div>
           ) : null}
-          <Badge variant="outline" className="number-mono text-[9px]">
-            {lineup?.slots.length ?? 0}/11
-          </Badge>
+          <Badge variant="outline" className="number-mono text-[8px]">{lineup?.slots.length ?? 0}/11</Badge>
         </div>
       </header>
 
-      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden p-4 lg:p-6 gap-4">
-        <div className="lg:w-[340px] flex-shrink-0 space-y-4">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden p-3 lg:p-4 gap-4">
+        <div className="lg:w-[320px] flex-shrink-0 space-y-4">
           <div>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Drafted players</span>
+            <span className="text-[9px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Drafted players</span>
             <div className="space-y-[1px] bg-[var(--color-border)]">
               {drafted.map((d) => {
                 const placed = lineup?.slots.some((s) => s.playerId === d.player.id);
                 return (
-                  <div
+                  <motion.div
                     key={d.player.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
                     className={cn(
                       "flex items-center gap-3 px-3 py-2.5 cursor-pointer bg-[var(--color-surface)]",
                       selectedPlayerId === d.player.id
                         ? "border-l-2 border-l-[var(--color-accent)] bg-[var(--color-accent)]/10"
                         : placed
                           ? "border-l-2 border-l-[var(--color-terminal-green)] bg-[var(--color-terminal-green)]/10"
-                          : "border-l-2 border-l-transparent hover:bg-white/50",
+                          : "border-l-2 border-l-transparent hover:bg-[var(--color-surface)]/50",
                     )}
                     onClick={() => setSelectedPlayerId(selectedPlayerId === d.player.id ? null : d.player.id)}
                   >
                     {placed ? (
-                      <span className="text-[10px] font-bold text-[var(--color-terminal-green)]">•</span>
+                      <span className="text-[9px] font-bold text-[var(--color-terminal-green)]">•</span>
                     ) : (
-                      <span className="text-[11px]">{d.player.nation}</span>
+                      <span className="text-[10px]">{d.player.nation}</span>
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold truncate uppercase">{d.player.name}</span>
-                        <span className="number-mono text-xs font-bold text-[var(--color-ink-dim)]">{d.player.rating}</span>
+                        <span className="text-xs font-bold truncate uppercase">{d.player.name}</span>
+                        <span className="number-mono text-[8px] font-bold text-[var(--color-ink-dim)]">{d.player.rating}</span>
                       </div>
                       <span className={cn("inline-block px-1.5 py-0.5 rounded-none text-[8px] font-bold uppercase", posColor(d.player.position))}>
                         {d.player.position}
                       </span>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
               {drafted.length === 0 && (
-                <div className="text-center py-6 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">No players drafted yet.</div>
+                <div className="text-center py-4 text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">No players drafted yet.</div>
               )}
             </div>
           </div>
@@ -168,7 +175,7 @@ export function LineupScreen({
 
         <div className="flex-1 min-w-0 space-y-4">
           <div>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Formation</span>
+            <span className="text-[9px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Formation</span>
             <Select onValueChange={handleSelectFormation} defaultValue={lineup?.formationId ?? null}>
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder={lineup?.formationId ? FORMATIONS.find((f) => f.id === lineup.formationId)!.name : "Choose formation"} />
@@ -196,7 +203,7 @@ export function LineupScreen({
               effectiveRatingBySlot={effRating}
             />
           </div>
-          <p className="text-center text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">
+          <p className="text-center text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">
             Tap a player, then tap a slot to place. Tap an occupied slot to lift/swap.
           </p>
         </div>
@@ -205,7 +212,7 @@ export function LineupScreen({
           <div>
             <div className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">Team rating</div>
             <div className="text-[22px] font-bold number-mono">{comp ? comp.teamRating.toFixed(1) : "—"}</div>
-            <div className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">Chemistry +{comp?.chemistry ?? 0}</div>
+            <div className="text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider">Chemistry +{comp?.chemistry ?? 0}</div>
           </div>
           <div className="flex gap-2">
             <Button
@@ -233,7 +240,7 @@ export function LineupScreen({
       </div>
 
       {allLocked && (
-        <div className="p-4 text-center text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">All managers locked in — voting begins.</div>
+        <div className="p-4 text-center text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider">All managers locked in — voting begins.</div>
       )}
     </div>
   );

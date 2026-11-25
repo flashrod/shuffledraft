@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast, Toaster as Sonner } from "sonner";
@@ -33,15 +34,15 @@ export function VoteScreen({
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
-        <div className="flex items-center gap-2 text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider mb-2">
+      <header className="px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
+        <div className="flex items-center gap-2 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider mb-2">
           <span>·</span>
           <span>Secret vote — pick the best XI (not your own)</span>
         </div>
-        <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase">Vote</h1>
+        <h1 className="text-[18px] font-bold tracking-tighter leading-none uppercase">Vote</h1>
       </header>
 
-      <div className="p-4 lg:p-6 overflow-y-auto">
+      <div className="p-3 lg:p-4 overflow-y-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[var(--color-border)]">
           {others.map((m) => {
             const lineup = state.lineups[m.id];
@@ -58,8 +59,10 @@ export function VoteScreen({
             }
             const rating = state.teamRatings[m.id] ?? 0;
             return (
-              <div
+              <motion.div
                 key={m.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 className={cn(
                   "border border-[var(--color-border)] bg-[var(--color-surface)] transition-colors",
                   voted
@@ -80,12 +83,12 @@ export function VoteScreen({
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-bold uppercase">{m.displayName}</span>
                     {voted && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[9px] font-bold uppercase text-[var(--color-bg)] bg-[var(--color-accent)] border border-[var(--color-accent)]">
-                        <span className="text-[8px]">•</span> Your vote
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[8px] font-bold uppercase text-[var(--color-bg)] bg-[var(--color-accent)] border border-[var(--color-accent)]">
+                        <span className="text-[7px]">•</span> Your vote
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 mt-2 text-[10px]">
+                  <div className="flex items-center gap-1 mt-2 text-[9px]">
                     {formation && (
                       <span className="font-mono opacity-70">{formation.name}</span>
                     )}
@@ -93,7 +96,7 @@ export function VoteScreen({
                     <span className="number-mono text-[var(--color-ink-dim)]">{rating.toFixed(1)}</span>
                   </div>
                 </div>
-                <div className="h-[180px] flex items-center justify-center p-2">
+                <div className="h-[160px] flex items-center justify-center p-2">
                   <Pitch
                     slots={formation?.slots ?? []}
                     fills={fillsBySlot}
@@ -103,24 +106,24 @@ export function VoteScreen({
                 </div>
                 <div className="p-3 text-center">
                   <span className={cn(
-                    "text-[9px] font-bold uppercase tracking-wider",
+                    "text-[8px] font-bold uppercase tracking-wider",
                     hasVoted ? "text-[var(--color-ink-dim)]" : "text-[var(--color-ink-dim)]",
                   )}>
                     {hasVoted ? (voted ? "Your vote" : "Voted") : "Tap to vote"}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
 
         {!hasVoted && (
-          <div className="mt-5 text-center text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">
+          <div className="mt-5 text-center text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">
             Your vote is secret until the reveal.
           </div>
         )}
 
-        <div className="mt-8 flex items-center gap-3 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">
+        <div className="mt-8 flex items-center gap-3 text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider">
           <span>Locked in:</span>
           {state.members.map((m) => (
             <span key={m.id} className={cn("flex items-center gap-1.5", state.lineups[m.id]?.locked ? "text-[var(--color-terminal-green)]" : "text-[var(--color-ink-dim)]")}>

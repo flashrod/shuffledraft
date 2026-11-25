@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { Player } from "@/lib/game";
 
@@ -17,7 +18,7 @@ function posColor(position: string) {
     case "GK": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
     case "DEF": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
     case "MID": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
-    case "FWD": return "border border-[var(--color-ink)] bg-transparent text-[var(--color-ink)]";
+    case "FWD": return "border border-[var(--color-accent)] bg-transparent text-[var(--color-accent)]";
   }
   return "border border-[var(--color-border)] text-[var(--color-ink-dim)]";
 }
@@ -33,7 +34,9 @@ export function PlayerCard({ player, selected = false, onSelect, tier = "availab
   const isDrafted = tier === "drafted";
 
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       className={cn(
         "border border-[var(--color-border)] bg-[var(--color-surface)] group",
         selected ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10" : "border-transparent hover:border-[var(--color-ink)] hover:bg-white/50",
@@ -73,6 +76,6 @@ export function PlayerCard({ player, selected = false, onSelect, tier = "availab
           <span className="text-[9px] font-bold leading-none">•</span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -18,6 +19,17 @@ interface DraftScreenProps {
   onReady?: (ready: boolean) => void;
   onStartDraft?: () => void;
 }
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, x: -20 },
+};
+
+const boardVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
 
 export function DraftScreen({ state, dispatch, onPick, onReady, onStartDraft }: DraftScreenProps) {
   const human = state.members[0];
@@ -53,31 +65,36 @@ export function DraftScreen({ state, dispatch, onPick, onReady, onStartDraft }: 
   return (
     <div className="flex flex-col h-full">
       <Sonner />
-      <header className="flex flex-col lg:flex-row lg:items-start justify-between gap-3 px-5 py-4 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
+      <header className="flex flex-col gap-2 px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)] sticky top-0 z-20">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">
             <span className="number-mono">Round {state.round + 1} / {GAME.ROUNDS}</span>
             <span className="w-px h-3 bg-[var(--color-border-bright)]"></span>
             <span>{state.statusMessage}</span>
           </div>
-          <h1 className="text-[22px] font-bold tracking-tighter leading-none uppercase">Shuffle Draft</h1>
+          <h1 className="text-[18px] font-bold tracking-tighter leading-none uppercase">Shuffle Draft</h1>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {state.config.pickTimer && state.timerSecondsLeft != null ? (
-            <div className="w-[140px] h-2 bg-[var(--color-border)] rounded-none overflow-hidden">
+            <div className="w-[120px] h-[2px] bg-[var(--color-border)] rounded-none overflow-hidden">
               <Progress value={(state.timerSecondsLeft / state.config.pickTimer) * 100} className="h-full bg-[var(--color-accent)]" />
             </div>
           ) : null}
-          <Badge variant="outline" className="number-mono text-[9px]">{humanDrafted.length}/{GAME.XI_SIZE}</Badge>
+          <Badge variant="outline" className="number-mono text-[8px]">{humanDrafted.length}/{GAME.XI_SIZE}</Badge>
         </div>
       </header>
 
-      <main className="flex-1 min-w-0 overflow-y-auto p-4 lg:p-6">
+      <main className="flex-1 min-w-0 overflow-y-auto p-3 lg:p-4">
         {holdSet ? (
-          <div className="px-1">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={boardVariants}
+            className="mb-4"
+          >
             <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-ink-dim)] block mb-3">Your set — pick one player</span>
             <Board set={holdSet} onPick={handlePick} disabled={false} />
-          </div>
+          </motion.div>
         ) : (
           <div className="px-4 py-20 text-center">
             <span className="text-[10px] text-[var(--color-ink-dim)] uppercase tracking-wider">Your set</span>
@@ -88,50 +105,60 @@ export function DraftScreen({ state, dispatch, onPick, onReady, onStartDraft }: 
 
       <aside className={cn(
         "border-t border-[var(--color-border)] bg-[var(--color-surface)]",
-        "lg:border-t-0 lg:border-l lg:border-[var(--color-border)] lg:w-[360px] lg:shadow-none",
+        "lg:border-t-0 lg:border-l lg:border-[var(--color-border)] lg:w-[340px] lg:shadow-none",
       )}>
-        <div className="p-4 lg:p-6 space-y-4">
+        <div className="p-3 lg:p-4 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider">Your XI (drafted)</h3>
-              <p className="text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider">Provisional {provisional}</p>
+              <h3 className="text-[10px] font-bold uppercase tracking-wider">Your XI (drafted)</h3>
+              <p className="text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider">Provisional {provisional}</p>
             </div>
             <Button
               onClick={() => setXiExpanded(!xiExpanded)}
               variant="outline"
               size="sm"
-              className="h-8 px-2.5 text-[9px]"
+              className="h-7 px-2 text-[8px]"
             >
               {xiExpanded ? "Collapse" : "View XI"}
             </Button>
           </div>
 
           {xiExpanded && (
-            <div className="space-y-3 pt-3 border-t border-[var(--color-border)]">
-              {humanDrafted.length === 0 ? (
-                <div className="text-center py-4 text-[9px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">No players drafted yet.</div>
-              ) : (
-                <div className="space-y-2">
-                  {humanDrafted.map((d) => (
-                    <div
-                      key={d.player.id}
-                      className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--color-border)]/20"
-                    >
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <span className="text-[9px] font-mono leading-none">{d.player.nation}</span>
-                        <span className="text-sm font-bold truncate uppercase">{d.player.name}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className={cn("inline-block px-1.5 py-0.5 rounded-none text-[8px] font-bold uppercase", posColor(d.player.position))}>
-                          {d.player.position}
-                        </span>
-                        <span className="number-mono text-xs font-bold">{d.player.rating}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="space-y-3 pt-3 border-t border-[var(--color-border)]">
+                {humanDrafted.length === 0 ? (
+                  <div className="text-center py-4 text-[8px] text-[var(--color-ink-dim)] uppercase tracking-wider italic">No players drafted yet.</div>
+                ) : (
+                  <div className="space-y-2">
+                    {humanDrafted.map((d) => (
+                      <motion.div
+                        key={d.player.id}
+                        initial="hidden"
+                        animate="visible"
+                        exit={cardVariants.exit}
+                        className="flex items-center justify-between gap-2 px-3 py-2 border-b border-[var(--color-border)]/20"
+                      >
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="text-[8px] font-mono leading-none">{d.player.nation}</span>
+                          <span className="text-xs font-bold truncate uppercase">{d.player.name}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className={cn("inline-block px-1.5 py-0.5 rounded-none text-[8px] font-bold uppercase", posColor(d.player.position))}>
+                            {d.player.position}
+                          </span>
+                          <span className="number-mono text-[8px] font-bold">{d.player.rating}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
           )}
         </div>
       </aside>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -64,7 +65,11 @@ export default function Home() {
       <Sonner />
       {mode === "home" ? (
         <div className="flex-1 p-6 md:p-12">
-          <div className="mx-auto max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto max-w-5xl"
+          >
             <div className="text-center mb-16">
               <h1 className="text-[48px] md:text-[64px] font-bold tracking-tighter leading-none uppercase mb-4">Shuffle Draft</h1>
               <p className="text-[var(--color-ink-dim)] text-[11px] uppercase tracking-wider">
@@ -72,7 +77,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 bg-[var(--color-border)] p-[1px]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-[1px] bg-[var(--color-border)] p-[1px]">
               <div className="lg:col-span-7">
                 <Card className="border-none p-0 bg-[var(--color-surface)]">
                   <CardContent className="p-6">
@@ -161,10 +166,14 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       ) : mode === "join" ? (
-        <div className="flex-1 p-6 md:p-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex-1 p-6 md:p-12"
+        >
           <div className="mx-auto max-w-xl">
             <div className="text-center mb-10">
               <h2 className="text-[24px] font-bold uppercase tracking-tighter leading-none mb-2">Join room</h2>
@@ -190,7 +199,7 @@ export default function Home() {
               Back
             </Button>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <GameShell />
       )}

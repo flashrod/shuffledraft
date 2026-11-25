@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { motion } from "framer-motion";
 import { Toaster as Sonner } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,7 +52,11 @@ function LobbyScreen({
   return (
     <div className="flex flex-col h-full p-6 md:p-10">
       <div className="mx-auto max-w-2xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10"
+        >
           <div>
             <h1 className="text-[32px] font-bold tracking-tighter leading-none uppercase">Shuffle Draft</h1>
             <p className="text-[var(--color-ink-dim)] text-[9px] uppercase tracking-wider">Solo vs bots — set up the room</p>
@@ -60,18 +65,28 @@ function LobbyScreen({
             <Badge variant="outline">{state.nManagers}/{GAME.MAX_MANAGERS} managers</Badge>
             <Badge variant="outline">{bots} bots</Badge>
           </div>
-        </div>
+        </motion.div>
 
-        <Card className="mb-7 border-none p-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ transitionDelay: "0.1s" }}
+          className="mb-7 border-none p-0"
+        >
           <CardHeader className="p-5 border-b border-[var(--color-border)]">
             <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Your name</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <Input defaultValue={human.displayName} className="w-full bg-transparent border-b border-[var(--color-border)] focus:border-[var(--color-accent)] px-0 text-[var(--color-ink)] placeholder-[var(--color-ink-dim)]" />
           </CardContent>
-        </Card>
+        </motion.div>
 
-        <Card className="mb-7 border-none p-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ transitionDelay: "0.2s" }}
+          className="mb-7 border-none p-0"
+        >
           <CardHeader className="p-5 border-b border-[var(--color-border)]">
             <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Managers</CardTitle>
           </CardHeader>
@@ -93,9 +108,14 @@ function LobbyScreen({
               ))}
             </div>
           </CardContent>
-        </Card>
+        </motion.div>
 
-        <Card className="mb-10 border-none p-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ transitionDelay: "0.3s" }}
+          className="mb-10 border-none p-0"
+        >
           <CardHeader className="p-5 border-b border-[var(--color-border)]">
             <CardTitle className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-ink-dim)]">Host settings</CardTitle>
           </CardHeader>
@@ -133,9 +153,14 @@ function LobbyScreen({
               ))}
             </div>
           </CardContent>
-        </Card>
+        </motion.div>
 
-        <div className="flex items-center justify-between gap-3">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ transitionDelay: "0.4s" }}
+          className="flex items-center justify-between gap-3"
+        >
           <Button
             onClick={() =>
               dispatch({
@@ -160,10 +185,16 @@ function LobbyScreen({
           >
             Start draft
           </Button>
-        </div>
+        </motion.div>
 
         {allReady && (
-          <p className="mt-6 text-center text-[9px] text-[var(--color-terminal-green)] font-bold uppercase tracking-wider">Everyone ready — host can start the draft.</p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-6 text-center text-[9px] text-[var(--color-terminal-green)] font-bold uppercase tracking-wider"
+          >
+            Everyone ready — host can start the draft.
+          </motion.div>
         )}
       </div>
     </div>
