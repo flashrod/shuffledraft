@@ -19,6 +19,7 @@ import {
   type Formation,
   type LineupAssignment,
   type Position,
+  type SetState,
 } from "@/lib/game";
 import { GAME, FORMATIONS, POSITION_MIX } from "@/lib/config";
 import { SEED_PLAYERS } from "@/lib/seed";
@@ -123,6 +124,7 @@ export function createEngine(
   nManagers: number,
   botDifficulty: "easy" | "normal" | "hard" = "normal",
   config: Partial<RoomConfig> = {},
+  dealtSets: SetState[] | null = null,
 ): EngineState {
   const n = Math.min(Math.max(nManagers, GAME.MIN_MANAGERS), GAME.MAX_MANAGERS);
   const members: Member[] = [newMember(0, humanName, false)];
@@ -131,15 +133,15 @@ export function createEngine(
   }
 
   const pool = SEED_PLAYERS;
-  const dealtSets = dealSets(pool, n, config.positionMix ?? POSITION_MIX.default);
+  const sets = dealtSets ?? dealSets(pool, n, config.positionMix ?? POSITION_MIX.default);
 
   return {
     phase: "lobby",
     round: 0,
     nManagers: n,
     members,
-    sets: dealtSets.map((s) => ({ index: s.index, players: [...s.players] })),
-    dealtSets,
+    sets: sets.map((s) => ({ index: s.index, players: [...s.players] })),
+    dealtSets: sets,
     drafted: {},
     picksThisRound: {},
     pickedThisRoundAvatars: {},
@@ -156,6 +158,7 @@ export function createEngine(
 }
 
 export type EngineAction =
+  | { type: "RESET"; state: EngineState }
   | { type: "SET_NAME"; memberId: string; name: string }
   | { type: "SET_READY"; memberId: string; ready: boolean }
   | { type: "SET_MANAGERS"; n: number }
@@ -189,6 +192,8 @@ function poolForConfig(engine: EngineState): Player[] {
 export function reducer(state: EngineState, action: EngineAction): EngineState {
   const s = state;
   switch (action.type) {
+    case "RESET":
+      return action.state;
     case "SET_NAME":
       return {
         ...s,

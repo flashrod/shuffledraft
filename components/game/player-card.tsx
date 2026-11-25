@@ -51,21 +51,21 @@ export function PlayerCard({ player, selected = false, onSelect, tier = "availab
         }
       }}
     >
-      <div className="px-3 pt-2.5 pb-2">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[9px] font-mono leading-none">{player.nation}</span>
+      <div className="px-2.5 pt-2 pb-2">
+        <div className="flex items-center justify-between gap-2 mb-1">
           <span className={cn("inline-block px-1.5 py-0.5 rounded text-[8px] font-bold leading-none", posColor(player.position))}>
             {player.position}
           </span>
+          <span className="text-[9px] font-mono leading-none">{player.nation}</span>
         </div>
-        <h3 className="mt-1 text-sm font-semibold leading-tight tracking-tight">{player.name}</h3>
+        <h3 className="text-sm font-semibold leading-tight tracking-tight truncate">{player.name}</h3>
       </div>
-      <div className="px-3 pb-2.5 border-t border-[var(--color-border)]/40">
-        <div className="flex items-end justify-between gap-2">
+      <div className="px-2.5 pb-2 border-t border-[var(--color-border)]/40">
+        <div className="flex items-end justify-between gap-1">
           <span className={cn("number-mono text-xl font-bold", tierColor(player.rating))}>
             {player.rating}
           </span>
-          <span className="text-[10px] text-[var(--color-muted-soft)] truncate max-w-[60%]">
+          <span className="text-[10px] text-[var(--color-muted-soft)] truncate max-w-[55%]">
             {player.club ?? "—"}
           </span>
         </div>

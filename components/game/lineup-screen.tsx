@@ -14,7 +14,23 @@ import type { Player } from "@/lib/game";
 
 const POSITION_LABEL: Record<string, string> = { GK: "Goalkeeper", DEF: "Defender", MID: "Midfielder", FWD: "Forward" };
 
-export function LineupScreen({ state, dispatch }: { state: EngineState; dispatch: React.Dispatch<EngineAction> }) {
+export function LineupScreen({
+  state,
+  dispatch,
+  onSelectFormation,
+  onPlace,
+  onAutoArrange,
+  onSuggest,
+  onLockLineup,
+}: {
+  state: EngineState;
+  dispatch: React.Dispatch<EngineAction>;
+  onSelectFormation?: (id: string) => void;
+  onPlace?: (slotIndex: number, playerId: string | null) => void;
+  onAutoArrange?: () => void;
+  onSuggest?: () => void;
+  onLockLineup?: () => void;
+}) {
   const human = state.members[0];
   const drafted = state.drafted[human.id] ?? [];
   const lineup = state.lineups[human.id];
@@ -26,6 +42,7 @@ export function LineupScreen({ state, dispatch }: { state: EngineState; dispatch
   const handleSelectFormation = (id: string | null) => {
     if (!id) return;
     dispatch({ type: "LINEUP_SELECT_FORMATION", memberId: human.id, formationId: id });
+    onSelectFormation?.(id);
     setSelectedPlayerId(null);
   };
 
@@ -34,9 +51,11 @@ export function LineupScreen({ state, dispatch }: { state: EngineState; dispatch
     const occupant = (lineup?.slots.find((s) => s.slotIndex === slotIndex)?.playerId) ?? null;
     if (selectedPlayerId) {
       dispatch({ type: "LINEUP_PLACE", memberId: human.id, slotIndex, playerId: selectedPlayerId });
+      onPlace?.(slotIndex, selectedPlayerId);
       setSelectedPlayerId(null);
     } else if (occupant) {
       dispatch({ type: "LINEUP_PLACE", memberId: human.id, slotIndex, playerId: null });
+      onPlace?.(slotIndex, null);
       setSelectedPlayerId(occupant);
     }
   };
@@ -44,11 +63,13 @@ export function LineupScreen({ state, dispatch }: { state: EngineState; dispatch
   const handleAutoArrange = () => {
     if (!lineup?.formationId) return;
     dispatch({ type: "LINEUP_AUTO", memberId: human.id });
+    onAutoArrange?.();
     setSelectedPlayerId(null);
   };
 
   const handleSuggest = () => {
     dispatch({ type: "LINEUP_SUGGEST", memberId: human.id });
+    onSuggest?.();
     setSelectedPlayerId(null);
   };
 
@@ -191,7 +212,10 @@ export function LineupScreen({ state, dispatch }: { state: EngineState; dispatch
           </div>
           <div className="flex gap-2">
             <Button
-              onClick={() => dispatch({ type: "LINEUP_LOCK", memberId: human.id })}
+              onClick={() => {
+                dispatch({ type: "LINEUP_LOCK", memberId: human.id });
+                onLockLineup?.();
+              }}
               disabled={!canLock || lineup?.locked || allLocked}
               className={cn(
                 "w-full lg:w-auto flex-1",

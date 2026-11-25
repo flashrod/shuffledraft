@@ -72,6 +72,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Trading-card style player card base */
 .player-card {
   @apply rounded-[14px] border border-[var(--color-border)] bg-white shadow-sm;
+  min-height: 128px;
   transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
   cursor: pointer;
 }

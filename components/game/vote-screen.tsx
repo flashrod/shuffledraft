@@ -9,7 +9,15 @@ import { FORMATIONS } from "@/lib/config";
 import { Pitch } from "@/components/game/pitch";
 import { cn } from "@/lib/utils";
 
-export function VoteScreen({ state, dispatch }: { state: EngineState; dispatch: React.Dispatch<EngineAction> }) {
+export function VoteScreen({
+  state,
+  dispatch,
+  onVote,
+}: {
+  state: EngineState;
+  dispatch: React.Dispatch<EngineAction>;
+  onVote?: (teamMemberId: string) => void;
+}) {
   const human = state.members[0];
   const others = state.members.filter((m) => m.id !== human.id);
 
@@ -18,6 +26,7 @@ export function VoteScreen({ state, dispatch }: { state: EngineState; dispatch: 
   const handleVote = (teamMemberId: string) => {
     if (hasVoted) return;
     dispatch({ type: "VOTE", voterMemberId: human.id, teamMemberId });
+    onVote?.(teamMemberId);
     toast("Vote cast");
   };
 

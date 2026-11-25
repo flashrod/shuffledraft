@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { toast, Toaster as Sonner } from "sonner";
 import { GameShell } from "@/components/game/game-shell";
 import { createRoom, joinRoom } from "@/app/actions/rooms";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [mode, setMode] = React.useState<"home" | "game" | "join">("home");
   const [joinCode, setJoinCode] = React.useState("");
   const [hostName, setHostName] = React.useState("Host");
@@ -31,9 +33,9 @@ export default function Home() {
         nManagers,
         botDifficulty,
       });
-      if (res.ok) {
+      if (res.ok && res.code) {
         toast(`Room created — ${res.code}`);
-        setMode("game");
+        router.push(`/room/${res.code}`);
       } else {
         toast(res.error || "Failed to create room");
       }
@@ -48,7 +50,7 @@ export default function Home() {
       const res = await joinRoom({ code: joinCode.toUpperCase(), displayName: "You" });
       if (res.ok) {
         toast("Joined room");
-        setMode("game");
+        router.push(`/room/${joinCode.toUpperCase()}`);
       } else {
         toast(res.error || "Failed to join room");
       }
