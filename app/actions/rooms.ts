@@ -4,18 +4,10 @@ import { db } from "@/lib/db";
 import { rooms, roomMembers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { GAME, ROOM_CODE_LENGTH } from "@/lib/config";
+import { generateRoomCode } from "@/lib/room";
 import { z } from "zod";
 
 const roomCodeSchema = z.string().length(ROOM_CODE_LENGTH).regex(/^[A-Z0-9]+$/);
-
-export function generateRoomCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no ambiguous chars
-  let code = "";
-  for (let i = 0; i < ROOM_CODE_LENGTH; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return code;
-}
 
 export interface CreateRoomInput {
   hostDisplayName: string;
