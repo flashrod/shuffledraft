@@ -173,9 +173,11 @@ export function provisionalRating(players: Player[]): number {
 /* ------------------------------------------------------------------ */
 
 /**
- * Snake-deal a pool into N sets.
- * For each position: take `required` players at random, sort by rating desc,
- * snake-deal across sets (0->N-1, N-1->0, ...).
+ * Deal a pool into N sets at random within position groups.
+ * For each position: take `required * nSets` players at random, then deal
+ * exactly `required` of that position to each set — but which specific
+ * players (and their ratings) land in which set is random.
+ * No snake-dealing, no rating sorting, no star balancing across sets.
  */
 export function dealSets(
   pool: Player[],
@@ -213,19 +215,16 @@ export function dealSets(
       );
     }
 
-    // Shuffle then take `needed`, then sort by rating desc.
-    const shuffled = [...candidates].sort(() => rng() - 0.5);
-    const taken = shuffled
-      .slice(0, needed)
-      .sort((a, b) => b.rating - a.rating);
+    // Shuffle and take `needed` players at random (no rating sort).
+    const taken = [...candidates].sort(() => rng() - 0.5).slice(0, needed);
 
-    // Snake deal ALL `needed` players across sets so each set gets `required`.
-    for (let i = 0; i < taken.length; i++) {
-      const row = Math.floor(i / nSets);
-      const col = i % nSets;
-      const setIndex =
-        row % 2 === 0 ? col : nSets - 1 - col;
-      sets[setIndex].players.push(taken[i]);
+    // Deal exactly `required` of this position to each set, in random order.
+    // Chunk the shuffled `taken` array into nSets groups of `required`.
+    for (let s = 0; s < nSets; s++) {
+      const group = taken.slice(s * required[pos], (s + 1) * required[pos]);
+      for (const player of group) {
+        sets[s].players.push(player);
+      }
     }
   }
 

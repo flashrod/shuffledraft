@@ -189,18 +189,12 @@ describe("dealSets", () => {
     expect(dealt.sort()).toEqual(pool.map((p) => p.id).sort());
   });
 
-  it("snake dealing spreads stars evenly across sets", () => {
-    // With deterministic rng (0.5 always), shuffle order is stable-ish; just
-    // verify top players are distributed across different sets when possible.
-    const sets = dealSets(pool, 3, { GK: 2, DEF: 4, MID: 4, FWD: 3 }, () => 0.5);
-    const gkRatings = sets.map((s) =>
-      s.players.filter((p) => p.position === "GK").map((p) => p.rating).sort((a, b) => b - a),
-    );
-    // Each set gets 2 GK; highest GKs should not all be in one set.
-    const allGk = sets.flatMap((s) => s.players.filter((p) => p.position === "GK"));
-    const topGk = allGk.sort((a, b) => b.rating - a.rating).slice(0, 3);
-    const setIndices = new Set(topGk.map((p) => sets.findIndex((s) => s.players.includes(p))));
-    expect(setIndices.size).toBeGreaterThan(1);
+  it("dealing is random — different RNG produces different sets", () => {
+    const setsA = dealSets(pool, 3, { GK: 2, DEF: 4, MID: 4, FWD: 3 }, () => 0.1);
+    const setsB = dealSets(pool, 3, { GK: 2, DEF: 4, MID: 4, FWD: 3 }, () => 0.9);
+    const idsA = setsA.flatMap((s) => s.players.map((p) => `${s.index}-${p.id}`)).sort();
+    const idsB = setsB.flatMap((s) => s.players.map((p) => `${s.index}-${p.id}`)).sort();
+    expect(idsA).not.toEqual(idsB);
   });
 
   it("throws when pool too small for a position", () => {

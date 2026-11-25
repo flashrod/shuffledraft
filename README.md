@@ -109,7 +109,7 @@ scripts/
 ## Game rules (all numbers in `lib/config.ts`)
 
 - 2–8 managers per room, 11 rounds
-- N sets of 13 players (11 XI + 2 buffer), snake-dealt per position so stars spread evenly
+- N sets of 13 players (11 XI + 2 buffer), dealt completely at random per position — no star balancing
 - Round r: manager i holds set (i + r) mod N; all pick simultaneously
 - Draft picks group by position (no formation yet); provisional rating = avg base + chemistry
 - Lineup phase: pick 1 of 10 formations, place 11 players on a pitch, auto-arrange / suggest best formation, lock in
