@@ -265,7 +265,7 @@ const BOT_POSITION_TARGETS: Record<Position, { min: number; max: number }> = {
 /**
  * How many picks remain in the draft (used for urgency calculation).
  */
-function roundsRemaining(currentRound: number): number {
+export function roundsRemaining(currentRound: number): number {
   return Math.max(0, GAME.ROUNDS - currentRound - 1);
 }
 

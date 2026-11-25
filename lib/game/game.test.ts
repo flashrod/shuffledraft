@@ -234,7 +234,7 @@ describe("bot draft pick", () => {
     currentCounts: counts,
     difficulty,
     roundsRemaining: 10,
-    draftedByBot: [],
+    draftedByBot: [] as Player[],
   });
 
   it("picks toward balanced target and avoids filled GK", () => {

@@ -17,28 +17,73 @@ const NATIONS = [
   { name: "Portugal", emoji: "🇵🇹" },
   { name: "Netherlands", emoji: "🇳🇱" },
   { name: "Belgium", emoji: "🇧🇪" },
+  { name: "Morocco", emoji: "🇲🇦" },
+  { name: "Uruguay", emoji: "🇺🇾" },
+  { name: "Croatia", emoji: "🇭🇷" },
+  { name: "Denmark", emoji: "🇩🇰" },
+  { name: "Sweden", emoji: "🇸🇪" },
+  { name: "Poland", emoji: "🇵🇱" },
+  { name: "Switzerland", emoji: "🇨🇭" },
+  { name: "Scotland", emoji: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+  { name: "Wales", emoji: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
+  { name: "Nigeria", emoji: "🇳🇬" },
+  { name: "Senegal", emoji: "🇸🇳" },
+  { name: "Cameroon", emoji: "🇨🇲" },
+  { name: "Egypt", emoji: "🇪🇬" },
+  { name: "Norway", emoji: "🇳🇴" },
+  { name: "Hungary", emoji: "🇭🇺" },
+  { name: "Czech Republic", emoji: "🇨🇿" },
+  { name: "Ukraine", emoji: "🇺🇦" },
+  { name: "Russia", emoji: "🇷🇺" },
+  { name: "Turkey", emoji: "🇹🇷" },
+  { name: "United States", emoji: "🇺🇸" },
+  { name: "Mexico", emoji: "🇲🇽" },
+  { name: "Canada", emoji: "🇨🇦" },
+  { name: "Japan", emoji: "🇯🇵" },
+  { name: "South Korea", emoji: "🇰🇷" },
+  { name: "Saudi Arabia", emoji: "🇸🇦" },
+  { name: "Qatar", emoji: "🇶🇦" },
+  { name: "Ivory Coast", emoji: "🇨🇮" },
+  { name: "Ghana", emoji: "🇬🇭" },
+  { name: "Mali", emoji: "🇲🇱" },
+  { name: "Burkina Faso", emoji: "🇧🇫" },
+  { name: "Algeria", emoji: "🇩🇿" },
+  { name: "Tunisia", emoji: "🇹🇳" },
+  { name: "Colombia", emoji: "🇨🇴" },
+  { name: "Chile", emoji: "🇨🇱" },
+  { name: "Peru", emoji: "🇵🇪" },
+  { name: "Ecuador", emoji: "🇪🇨" },
+  { name: "Costa Rica", emoji: "🇨🇷" },
+  { name: "Panama", emoji: "🇵🇦" },
+  { name: "Jamaica", emoji: "🇯🇲" },
+  { name: "Northern Ireland", emoji: "🇬🇧" },
+  { name: "Republic of Ireland", emoji: "🇮🇪" },
 ] as const;
+
+function nationEmoji(nation: string): string {
+  const n = NATIONS.find((n) => n.name === nation);
+  return n?.emoji ?? "🏳️";
+}
 
 function player(id: string, attrs: {
   name: string; position: "GK" | "DEF" | "MID" | "FWD"; rating: number;
   nation: string; club?: string; icon?: boolean;
 }): Player {
-  const nation = NATIONS.find((n) => n.name === attrs.nation);
   return {
     id,
     name: attrs.name,
     position: attrs.position,
     rating: attrs.rating,
     nation: attrs.nation,
-    nationEmoji: nation?.emoji ?? "🏳️",
+    nationEmoji: nationEmoji(attrs.nation),
     club: attrs.club,
     isIcon: attrs.icon,
   };
 }
 
-/** Current-ish players (approximate, for seeding only). */
+/** Current players (approximate, for seeding only). */
 const CURRENT: Player[] = [
-  // GK
+  // ---------- GK ----------
   player("cur-gk-1", { name: "Alisson", position: "GK", rating: 88, nation: "Brazil", club: "Liverpool" }),
   player("cur-gk-2", { name: "Raya", position: "GK", rating: 84, nation: "Spain", club: "Arsenal" }),
   player("cur-gk-3", { name: "Onana", position: "GK", rating: 82, nation: "Cameroon", club: "Man Utd" }),
@@ -47,7 +92,15 @@ const CURRENT: Player[] = [
   player("cur-gk-6", { name: "Sommer", position: "GK", rating: 84, nation: "Switzerland", club: "Inter" }),
   player("cur-gk-7", { name: "Lloris", position: "GK", rating: 80, nation: "France", club: "Spurs" }),
   player("cur-gk-8", { name: "Ramsdale", position: "GK", rating: 78, nation: "England", club: "Arsenal" }),
-  // DEF
+  player("cur-gk-9", { name: "Ederson", position: "GK", rating: 87, nation: "Brazil", club: "Man City" }),
+  player("cur-gk-10", { name: "Ter Stegen", position: "GK", rating: 86, nation: "Germany", club: "Barcelona" }),
+  player("cur-gk-11", { name: "Courtois", position: "GK", rating: 86, nation: "Belgium", club: "Real Madrid" }),
+  player("cur-gk-12", { name: "Oblak", position: "GK", rating: 85, nation: "Slovenia", club: "Atletico" }),
+  player("cur-gk-13", { name: "Neuer", position: "GK", rating: 82, nation: "Germany", club: "Bayern" }),
+  player("cur-gk-14", { name: "Donnarumma", position: "GK", rating: 84, nation: "Italy", club: "PSG" }),
+  player("cur-gk-15", { name: "Mendy", position: "GK", rating: 80, nation: "Senegal", club: "Chelsea" }),
+
+  // ---------- DEF ----------
   player("cur-d-1", { name: "Van Dijk", position: "DEF", rating: 91, nation: "Netherlands", club: "Liverpool" }),
   player("cur-d-2", { name: "Ruben Dias", position: "DEF", rating: 88, nation: "Portugal", club: "Man City" }),
   player("cur-d-3", { name: "Saliba", position: "DEF", rating: 87, nation: "France", club: "Arsenal" }),
@@ -66,7 +119,15 @@ const CURRENT: Player[] = [
   player("cur-d-16", { name: "Tavares", position: "DEF", rating: 81, nation: "Portugal", club: "Benfica" }),
   player("cur-d-17", { name: "Kounde", position: "DEF", rating: 85, nation: "France", club: "Barcelona" }),
   player("cur-d-18", { name: "Ake", position: "DEF", rating: 82, nation: "Netherlands", club: "Man City" }),
-  // MID
+  player("cur-d-19", { name: "Walker", position: "DEF", rating: 82, nation: "England", club: "Man City" }),
+  player("cur-d-20", { name: "Cancelo", position: "DEF", rating: 84, nation: "Portugal", club: "Barca" }),
+  player("cur-d-21", { name: "Alba", position: "DEF", rating: 82, nation: "Spain", club: "Inter" }),
+  player("cur-d-22", { name: "Gvardiol", position: "DEF", rating: 85, nation: "Croatia", club: "Man City" }),
+  player("cur-d-23", { name: "De Ligt", position: "DEF", rating: 83, nation: "Netherlands", club: "Bayern" }),
+  player("cur-d-24", { name: "Marquinhos", position: "DEF", rating: 85, nation: "Brazil", club: "PSG" }),
+  player("cur-d-25", { name: "Varane", position: "DEF", rating: 83, nation: "France", club: "Man Utd" }),
+
+  // ---------- MID ----------
   player("cur-m-1", { name: "Rodri", position: "MID", rating: 92, nation: "Spain", club: "Man City" }),
   player("cur-m-2", { name: "Bellingham", position: "MID", rating: 90, nation: "England", club: "Real Madrid" }),
   player("cur-m-3", { name: "De Bruyne", position: "MID", rating: 89, nation: "Belgium", club: "Man City" }),
@@ -85,7 +146,20 @@ const CURRENT: Player[] = [
   player("cur-m-16", { name: "Ugarte", position: "MID", rating: 83, nation: "Uruguay", club: "PSG" }),
   player("cur-m-17", { name: "Szoboszlai", position: "MID", rating: 83, nation: "Hungary", club: "Liverpool" }),
   player("cur-m-18", { name: "Mac Allister", position: "MID", rating: 84, nation: "Argentina", club: "Liverpool" }),
-  // FWD
+  player("cur-m-19", { name: "Modric", position: "MID", rating: 85, nation: "Croatia", club: "Real Madrid" }),
+  player("cur-m-20", { name: "Kroos", position: "MID", rating: 86, nation: "Germany", club: "Real Madrid" }),
+  player("cur-m-21", { name: "Kante", position: "MID", rating: 84, nation: "France", club: "Al-Ittihad" }),
+  player("cur-m-22", { name: "Pogba", position: "MID", rating: 80, nation: "France", club: "Juventus" }),
+  player("cur-m-23", { name: "Verratti", position: "MID", rating: 82, nation: "Italy", club: "PSG" }),
+  player("cur-m-24", { name: "Fabinho", position: "MID", rating: 82, nation: "Brazil", club: "Al-Ittihad" }),
+  player("cur-m-25", { name: "Casemiro", position: "MID", rating: 83, nation: "Brazil", club: "Man Utd" }),
+  player("cur-m-26", { name: "Locatelli", position: "MID", rating: 81, nation: "Italy", club: "Juventus" }),
+  player("cur-m-27", { name: "Barella", position: "MID", rating: 83, nation: "Italy", club: "Inter" }),
+  player("cur-m-28", { name: "Thuram", position: "MID", rating: 82, nation: "France", club: "Inter" }),
+  player("cur-m-29", { name: "Olmo", position: "MID", rating: 82, nation: "Spain", club: "Barcelona" }),
+  player("cur-m-30", { name: "Wirtz", position: "MID", rating: 84, nation: "Germany", club: "Bayer Leverkusen" }),
+
+  // ---------- FWD ----------
   player("cur-f-1", { name: "Haaland", position: "FWD", rating: 93, nation: "Norway", club: "Man City" }),
   player("cur-f-2", { name: "Mbappe", position: "FWD", rating: 92, nation: "France", club: "Real Madrid" }),
   player("cur-f-3", { name: "Vinicius Jr", position: "FWD", rating: 91, nation: "Brazil", club: "Real Madrid" }),
@@ -93,7 +167,7 @@ const CURRENT: Player[] = [
   player("cur-f-5", { name: "Kane", position: "FWD", rating: 89, nation: "England", club: "Bayern" }),
   player("cur-f-6", { name: "Griezmann", position: "FWD", rating: 87, nation: "France", club: "Atletico" }),
   player("cur-f-7", { name: "Saka", position: "FWD", rating: 87, nation: "England", club: "Arsenal" }),
-  player("cur-f-8", { name: "Foden-w", position: "FWD", rating: 85, nation: "England", club: "Man City" }),
+  player("cur-f-8", { name: "Foden", position: "FWD", rating: 85, nation: "England", club: "Man City" }),
   player("cur-f-9", { name: "Rashford", position: "FWD", rating: 82, nation: "England", club: "Man Utd" }),
   player("cur-f-10", { name: "Isak", position: "FWD", rating: 86, nation: "Sweden", club: "Newcastle" }),
   player("cur-f-11", { name: "Leao", position: "FWD", rating: 85, nation: "Portugal", club: "Milan" }),
@@ -102,18 +176,48 @@ const CURRENT: Player[] = [
   player("cur-f-14", { name: "Osimhen", position: "FWD", rating: 86, nation: "Nigeria", club: "Galatasaray" }),
   player("cur-f-15", { name: "Zirkzee", position: "FWD", rating: 81, nation: "Netherlands", club: "Man Utd" }),
   player("cur-f-16", { name: "Alvarez", position: "FWD", rating: 84, nation: "Argentina", club: "Atletico" }),
+  player("cur-f-17", { name: "Sterling", position: "FWD", rating: 80, nation: "England", club: "Chelsea" }),
+  player("cur-f-18", { name: "Martinez", position: "FWD", rating: 84, nation: "Argentina", club: "Inter" }),
+  player("cur-f-19", { name: "Lautaro", position: "FWD", rating: 85, nation: "Argentina", club: "Inter" }),
+  player("cur-f-20", { name: "Giroud", position: "FWD", rating: 81, nation: "France", club: "Milan" }),
+  player("cur-f-21", { name: "Morata", position: "FWD", rating: 81, nation: "Spain", club: "Atletico" }),
+  player("cur-f-22", { name: "Morata", position: "FWD", rating: 81, nation: "Spain", club: "Atletico" }),
+  player("cur-f-23", { name: "Firmino", position: "FWD", rating: 80, nation: "Brazil", club: "Al-Ahli" }),
+  player("cur-f-24", { name: "Sane", position: "FWD", rating: 83, nation: "Germany", club: "Bayern" }),
+  player("cur-f-25", { name: "Coman", position: "FWD", rating: 81, nation: "France", club: "Bayern" }),
+  player("cur-f-26", { name: "Sancho", position: "FWD", rating: 80, nation: "England", club: "Man Utd" }),
+  player("cur-f-27", { name: "Mount", position: "FWD", rating: 80, nation: "England", club: "Man Utd" }),
+  player("cur-f-28", { name: "Pulisic", position: "FWD", rating: 81, nation: "United States", club: "Milan" }),
+  player("cur-f-29", { name: "Grealish", position: "FWD", rating: 80, nation: "England", club: "Man City" }),
+  player("cur-f-30", { name: "Bernardo Silva", position: "MID", rating: 86, nation: "Portugal", club: "Man City" }),
 ];
 
 /** All-time icons (seeded; admins curate via Wikidata import later). */
 const ICONS: Player[] = [
+  // GK
   player("ico-gk-1", { name: "Lev Yashin", position: "GK", rating: 95, nation: "Soviet Union", icon: true }),
   player("ico-gk-2", { name: "Gianluigi Buffon", position: "GK", rating: 93, nation: "Italy", icon: true }),
+  player("ico-gk-3", { name: "Dino Zoff", position: "GK", rating: 90, nation: "Italy", icon: true }),
+  player("ico-gk-4", { name: "Oliver Kahn", position: "GK", rating: 91, nation: "Germany", icon: true }),
+  player("ico-gk-5", { name: "Peter Schmeichel", position: "GK", rating: 89, nation: "Denmark", icon: true }),
+  // DEF
   player("ico-d-1", { name: "Franz Beckenbauer", position: "DEF", rating: 96, nation: "Germany", icon: true }),
   player("ico-d-2", { name: "Paolo Maldini", position: "DEF", rating: 95, nation: "Italy", icon: true }),
   player("ico-d-3", { name: "Franco Baresi", position: "DEF", rating: 93, nation: "Italy", icon: true }),
   player("ico-d-4", { name: "Cafu", position: "DEF", rating: 91, nation: "Brazil", icon: true }),
   player("ico-d-5", { name: "Roberto Carlos", position: "DEF", rating: 92, nation: "Brazil", icon: true }),
-  player("ico-m-1", { name: "Pele", position: "FWD", rating: 99, nation: "Brazil", icon: true }),
+  player("ico-d-6", { name: "Paolo Maldini", position: "DEF", rating: 95, nation: "Italy", icon: true }),
+  player("ico-d-7", { name: "Alessandro Nesta", position: "DEF", rating: 89, nation: "Italy", icon: true }),
+  player("ico-d-8", { name: "Carlos Puyol", position: "DEF", rating: 89, nation: "Spain", icon: true }),
+  player("ico-d-9", { name: "John Terry", position: "DEF", rating: 87, nation: "England", icon: true }),
+  player("ico-d-10", { name: "Rio Ferdinand", position: "DEF", rating: 86, nation: "England", icon: true }),
+  player("ico-d-11", { name: "Nemanja Vidic", position: "DEF", rating: 86, nation: "Serbia", icon: true }),
+  player("ico-d-12", { name: "Jaap Stam", position: "DEF", rating: 85, nation: "Netherlands", icon: true }),
+  player("ico-d-13", { name: "Laurent Blanc", position: "DEF", rating: 85, nation: "France", icon: true }),
+  player("ico-d-14", { name: "Marcel Desailly", position: "DEF", rating: 86, nation: "France", icon: true }),
+  player("ico-d-15", { name: "Lilian Thuram", position: "DEF", rating: 87, nation: "France", icon: true }),
+  // MID
+  player("ico-m-1", { name: "Pele", position: "MID", rating: 99, nation: "Brazil", icon: true }),
   player("ico-m-2", { name: "Diego Maradona", position: "MID", rating: 98, nation: "Argentina", icon: true }),
   player("ico-m-3", { name: "Johan Cruyff", position: "MID", rating: 97, nation: "Netherlands", icon: true }),
   player("ico-m-4", { name: "Zinedine Zidane", position: "MID", rating: 96, nation: "France", icon: true }),
@@ -121,6 +225,17 @@ const ICONS: Player[] = [
   player("ico-m-6", { name: "Ronaldinho", position: "MID", rating: 95, nation: "Brazil", icon: true }),
   player("ico-m-7", { name: "Xavi", position: "MID", rating: 94, nation: "Spain", icon: true }),
   player("ico-m-8", { name: "Iniesta", position: "MID", rating: 94, nation: "Spain", icon: true }),
+  player("ico-m-9", { name: "Steven Gerrard", position: "MID", rating: 89, nation: "England", icon: true }),
+  player("ico-m-10", { name: "Frank Lampard", position: "MID", rating: 88, nation: "England", icon: true }),
+  player("ico-m-11", { name: "Paul Scholes", position: "MID", rating: 87, nation: "England", icon: true }),
+  player("ico-m-12", { name: "Roy Keane", position: "MID", rating: 86, nation: "Ireland", icon: true }),
+  player("ico-m-13", { name: "Patrick Vieira", position: "MID", rating: 87, nation: "France", icon: true }),
+  player("ico-m-14", { name: "Edgar Davids", position: "MID", rating: 85, nation: "Netherlands", icon: true }),
+  player("ico-m-15", { name: "Clarence Seedorf", position: "MID", rating: 86, nation: "Netherlands", icon: true }),
+  player("ico-m-16", { name: "Michael Laudrup", position: "MID", rating: 88, nation: "Denmark", icon: true }),
+  player("ico-m-17", { name: "Michel Platini", position: "MID", rating: 90, nation: "France", icon: true }),
+  player("ico-m-18", { name: "Zico", position: "MID", rating: 89, nation: "Brazil", icon: true }),
+  // FWD
   player("ico-f-1", { name: "Lionel Messi", position: "FWD", rating: 99, nation: "Argentina", icon: true }),
   player("ico-f-2", { name: "Cristiano Ronaldo", position: "FWD", rating: 99, nation: "Portugal", icon: true }),
   player("ico-f-3", { name: "Ronaldo Nazario", position: "FWD", rating: 97, nation: "Brazil", icon: true }),
@@ -129,6 +244,18 @@ const ICONS: Player[] = [
   player("ico-f-6", { name: "George Best", position: "FWD", rating: 93, nation: "Northern Ireland", icon: true }),
   player("ico-f-7", { name: "Alfredo Di Stefano", position: "FWD", rating: 96, nation: "Argentina", icon: true }),
   player("ico-f-8", { name: "Ferenc Puskas", position: "FWD", rating: 95, nation: "Hungary", icon: true }),
+  player("ico-f-9", { name: "Marco van Basten", position: "FWD", rating: 94, nation: "Netherlands", icon: true }),
+  player("ico-f-10", { name: "Romario", position: "FWD", rating: 93, nation: "Brazil", icon: true }),
+  player("ico-f-11", { name: "Gabriel Batistuta", position: "FWD", rating: 90, nation: "Argentina", icon: true }),
+  player("ico-f-12", { name: "Gabriel Batistuta", position: "FWD", rating: 90, nation: "Argentina", icon: true }),
+  player("ico-f-13", { name: "Rivaldo", position: "FWD", rating: 92, nation: "Brazil", icon: true }),
+  player("ico-f-14", { name: "Roberto Baggio", position: "FWD", rating: 91, nation: "Italy", icon: true }),
+  player("ico-f-15", { name: "Alessandro Del Piero", position: "FWD", rating: 89, nation: "Italy", icon: true }),
+  player("ico-f-16", { name: "Francesco Totti", position: "FWD", rating: 90, nation: "Italy", icon: true }),
+  player("ico-f-17", { name: "David Beckham", position: "MID", rating: 87, nation: "England", icon: true }),
+  player("ico-f-18", { name: "Ryan Giggs", position: "MID", rating: 87, nation: "Wales", icon: true }),
+  player("ico-f-19", { name: "Eric Cantona", position: "FWD", rating: 88, nation: "France", icon: true }),
+  player("ico-f-20", { name: "Alan Shearer", position: "FWD", rating: 88, nation: "England", icon: true }),
 ];
 
 export const SEED_PLAYERS: Player[] = [...CURRENT, ...ICONS];
